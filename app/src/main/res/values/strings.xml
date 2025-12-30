@@ -1,0 +1,141 @@
+<resources>
+    <string name="app_name">EventParser</string>
+
+    <!-- Navigation -->
+    <string name="nav_events">Мероприятия</string>
+    <string name="nav_favorites">Избранное</string>
+    <string name="nav_details">Детали</string>
+
+    <!-- Events Screen -->
+    <string name="events_title">IT События</string>
+    <string name="events_subtitle">Найди свое следующее мероприятие</string>
+    <string name="events_refresh">Обновить</string>
+    <string name="events_refreshed">Мероприятия обновлены!</string>
+
+    <!-- Empty States -->
+    <string name="empty_events_title">Пока нет мероприятий</string>
+    <string name="empty_events_description">Мы ищем интересные IT-события для вас.\nПотяните вниз, чтобы обновить список или проверьте позже.</string>
+    <string name="empty_favorites_title">Пока нет избранных</string>
+    <string name="empty_favorites_description">Добавьте интересные мероприятия в избранное,\nчтобы быстро к ним возвращаться.\nПросто нажмите на сердечко ❤️</string>
+    <string name="error_title">Ошибка загрузки</string>
+    <string name="error_retry">Повторить</string>
+    <string name="action_refresh">Обновить</string>
+
+    <!-- Event Detail -->
+    <string name="event_detail_back">Назад</string>
+    <string name="event_detail_share">Поделиться</string>
+    <string name="event_detail_favorite_add">Добавить в избранное</string>
+    <string name="event_detail_favorite_remove">Удалить из избранного</string>
+    <string name="event_detail_open">Перейти</string>
+    <string name="event_detail_add_to_calendar">Добавить в календарь</string>
+    <string name="event_detail_online">Онлайн мероприятие</string>
+    <string name="event_detail_date">Дата и время</string>
+    <string name="event_detail_location">Место</string>
+    <string name="event_detail_organizer">Организатор</string>
+    <string name="event_detail_description">Описание</string>
+    <string name="share_text">%1$s\n\n%2$s\n\n%3$s</string>
+    <string name="share_chooser">Поделиться</string>
+    <string name="event_detail_error_missing_id">ID события не найден</string>
+    <string name="event_detail_error_not_found">Событие не найдено</string>
+
+    <!-- Errors -->
+    <string name="error_loading_data">Ошибка загрузки данных</string>
+    <string name="error_refresh">Ошибка обновления</string>
+    <string name="error_no_internet">Нет подключения к интернету</string>
+    <string name="error_timeout">Превышено время ожидания. Проверьте подключение к интернету.</string>
+    <string name="error_connection">Не удается подключиться к серверу. Проверьте интернет-соединение.</string>
+    <string name="error_timeout_retry">Превышено время ожидания. Попробуйте еще раз.</string>
+    <string name="error_connection_check">Проблема с подключением к интернету. Проверьте соединение.</string>
+    <string name="error_bad_request">Некорректный запрос. Попробуйте обновить приложение.</string>
+    <string name="error_unauthorized">Ошибка авторизации. Попробуйте позже.</string>
+    <string name="error_forbidden">Доступ запрещен. Попробуйте позже.</string>
+    <string name="error_not_found">Ресурс не найден. Попробуйте позже.</string>
+    <string name="error_request_timeout">Превышено время ожидания запроса.</string>
+    <string name="error_too_many_requests">Слишком много запросов. Попробуйте через некоторое время.</string>
+    <string name="error_server">Ошибка сервера. Попробуйте позже.</string>
+    <string name="error_server_code">Ошибка сервера %1$d. Попробуйте позже.</string>
+    <string name="error_unknown">Произошла неизвестная ошибка. Попробуйте еще раз.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Настройки</string>
+    <string name="settings_theme">Тема</string>
+    <string name="settings_theme_system">Системная</string>
+    <string name="settings_theme_light">Светлая</string>
+    <string name="settings_theme_dark">Темная</string>
+    <string name="settings_actions">Действия</string>
+    <string name="settings_about">О приложении</string>
+    <string name="settings_clear_cache">Очистить кэш</string>
+    <string name="settings_clear_cache_subtitle">Освободить место на устройстве</string>
+    <string name="settings_cache_cleared">Кэш очищен</string>
+    <string name="settings_app_version_format">Версия %1$s</string>
+    <string name="settings_app_description">Приложение для поиска IT-мероприятий</string>
+    <string name="settings_app_display_name">Event Parser</string>
+    <string name="settings_system">Система</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_notifications_subtitle">Открыть системные настройки уведомлений</string>
+    <string name="settings_app_settings">Настройки приложения</string>
+    <string name="settings_app_settings_subtitle">Разрешения, хранилище, батарея</string>
+    <string name="settings_more">Дополнительно</string>
+    <string name="settings_share_app">Поделиться приложением</string>
+    <string name="settings_share_app_subtitle">Отправить ссылку друзьям или коллегам</string>
+    <string name="settings_share_app_text">Попробуй EventParser — приложение для поиска IT-мероприятий: %1$s</string>
+    <string name="settings_rate_app">Оценить приложение</string>
+    <string name="settings_rate_app_subtitle">Открыть страницу в магазине</string>
+
+    <!-- Categories -->
+    <string name="category_all">Все</string>
+
+    <!-- Common -->
+    <string name="online">Онлайн</string>
+
+    <!-- Event badges -->
+    <string name="badge_today">Сегодня</string>
+    <string name="badge_tomorrow">Завтра</string>
+    <string name="badge_soon">Скоро</string>
+
+    <!-- Quick filters -->
+    <string name="filter_button">Фильтры</string>
+    <string name="filter_button_count">Фильтры (%1$d)</string>
+    <string name="filters_apply">Применить</string>
+    <string name="filters_sort_title">Сортировка</string>
+    <string name="filters_quick_title">Быстрые фильтры</string>
+
+    <!-- Summary -->
+    <string name="summary_total">Всего</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_name">Напоминания о событиях</string>
+    <string name="notification_channel_desc">Уведомления о предстоящих событиях из избранного</string>
+    <string name="notification_title">Скоро: %1$s</string>
+    <string name="notification_text">Событие начнется через %1$s</string>
+    <string name="time_hour_one">час</string>
+    <string name="time_hour_few">часа</string>
+    <string name="time_hour_many">часов</string>
+
+    <string name="notification_new_events_channel_name">Новые события</string>
+    <string name="notification_new_events_channel_desc">Уведомления о появлении новых событий</string>
+    <string name="notification_new_events_title">Найдено новых событий: %1$d</string>
+    <string name="notification_new_events_text">Откройте приложение, чтобы посмотреть</string>
+
+    <string name="notifications_permission_denied">Уведомления отключены. Разрешите их в настройках, чтобы получать напоминания.</string>
+
+    <!-- Favorites import/export -->
+    <string name="favorites_export_title">Экспорт избранного</string>
+    <string name="favorites_import_title">Импорт избранного</string>
+    <string name="favorites_export_done">Файл избранного экспортирован</string>
+    <string name="favorites_import_done_format">Импортировано событий: %1$d</string>
+    <string name="favorites_export_failed">Не удалось экспортировать</string>
+    <string name="favorites_import_failed">Не удалось импортировать</string>
+    <string name="favorites_import_unsupported_version_format">Неподдерживаемая версия файла: %1$d</string>
+
+    <!-- ICS export -->
+    <string name="event_detail_share_ics">Поделиться файлом календаря (.ics)</string>
+    <string name="event_detail_share_ics_chooser">Поделиться файлом календаря</string>
+
+    <!-- Event detail: labels -->
+    <string name="event_detail_registration_deadline">Регистрация до</string>
+    <string name="event_detail_prize_fund">Призовой фонд</string>
+    <string name="event_detail_max_participants">Максимум участников</string>
+    <string name="event_detail_max_participants_value_format">%1$d человек</string>
+    <string name="event_detail_tags">Теги</string>
+</resources>
