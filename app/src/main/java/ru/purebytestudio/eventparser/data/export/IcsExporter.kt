@@ -71,7 +71,7 @@ class IcsExporter(
         return buildString {
             append("BEGIN:VCALENDAR").append(crlf)
             append("VERSION:2.0").append(crlf)
-            append("PRODID:-//PureByte Studio//EventParser//RU").append(crlf)
+            append("PRODID:-//PureByte Studio//DevEvents//RU").append(crlf)
             append("CALSCALE:GREGORIAN").append(crlf)
             append("METHOD:PUBLISH").append(crlf)
             append("BEGIN:VEVENT").append(crlf)
@@ -119,4 +119,3 @@ class IcsExporter(
             )
     }
 }
-

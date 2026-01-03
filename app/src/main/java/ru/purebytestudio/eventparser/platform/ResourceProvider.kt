@@ -16,4 +16,3 @@ interface ResourceProvider {
         vararg args: Any
     ): String
 }
-

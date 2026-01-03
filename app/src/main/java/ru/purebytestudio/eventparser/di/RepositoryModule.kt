@@ -22,4 +22,3 @@ val repositoryModule = module {
     singleOf(::AppPreferences)
     singleOf(::UserPreferencesRepositoryImpl) bind UserPreferencesRepository::class
 }
-

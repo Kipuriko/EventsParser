@@ -18,4 +18,3 @@ val viewModelModule = module {
     viewModelOf(::EventDetailViewModel)
     viewModelOf(::SettingsViewModel)
 }
-

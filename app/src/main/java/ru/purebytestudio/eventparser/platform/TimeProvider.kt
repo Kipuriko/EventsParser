@@ -14,4 +14,3 @@ interface TimeProvider {
     fun now(): LocalDateTime
     fun today(): LocalDate
 }
-

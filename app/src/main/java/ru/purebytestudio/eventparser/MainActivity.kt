@@ -10,6 +10,7 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -79,7 +80,10 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         )
-                        MainContent(eventId = eventId)
+                        MainContent(
+                            eventId = eventId,
+                            darkThemePref = isDarkTheme
+                        )
                     }
                 }
             }
@@ -100,7 +104,10 @@ class MainActivity : ComponentActivity() {
  * Основной контент приложения с логикой отображения Onboarding или главной навигации.
  */
 @Composable
-private fun MainContent(eventId: String?) {
+private fun MainContent(
+    eventId: String?,
+    darkThemePref: Boolean?
+) {
     val userPreferencesRepository: UserPreferencesRepository = koinInject()
     val hasSeenOnboarding by userPreferencesRepository.hasSeenOnboarding.collectAsState(initial = null)
 
@@ -115,6 +122,7 @@ private fun MainContent(eventId: String?) {
             val currentDestination = navBackStackEntry?.destination
             val showBottomBar = currentDestination?.route in bottomNavItems.map { it.route }
             var isBottomBarVisible by remember { mutableStateOf(true) }
+            val useDarkTheme = darkThemePref ?: isSystemInDarkTheme()
 
             val nestedScrollConnection = remember {
                 object : NestedScrollConnection {
@@ -153,7 +161,8 @@ private fun MainContent(eventId: String?) {
                     ) {
                         EventParserBottomBar(
                             navController = navController,
-                            currentRoute = currentDestination?.route
+                            currentRoute = currentDestination?.route,
+                            isDarkTheme = useDarkTheme
                         )
                     }
                 }

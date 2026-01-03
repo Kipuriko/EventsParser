@@ -33,4 +33,3 @@ internal class TelegramImageExtractor {
         return href
     }
 }
-

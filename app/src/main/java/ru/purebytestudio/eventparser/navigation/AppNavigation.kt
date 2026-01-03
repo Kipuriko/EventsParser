@@ -203,7 +203,8 @@ fun AppNavigation(
 @Composable
 fun EventParserBottomBar(
     navController: NavHostController,
-    currentRoute: String?
+    currentRoute: String?,
+    isDarkTheme: Boolean
 ) {
     NavigationBar(
         modifier = Modifier
@@ -227,6 +228,16 @@ fun EventParserBottomBar(
         bottomNavItems.forEach { screen ->
             val selected = currentRoute == screen.route
             val label = stringResource(screen.titleResId)
+            val selectedColor = if (isDarkTheme) {
+                MaterialTheme.colorScheme.primary.copy(alpha = 0.82f)
+            } else {
+                MaterialTheme.colorScheme.primary
+            }
+            val indicatorColor = if (isDarkTheme) {
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f)
+            } else {
+                MaterialTheme.colorScheme.primaryContainer
+            }
 
             NavigationBarItem(
                 icon = {
@@ -253,9 +264,9 @@ fun EventParserBottomBar(
                     }
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = MaterialTheme.colorScheme.primary,
-                    selectedTextColor = MaterialTheme.colorScheme.primary,
-                    indicatorColor = MaterialTheme.colorScheme.primaryContainer,
+                    selectedIconColor = selectedColor,
+                    selectedTextColor = selectedColor,
+                    indicatorColor = indicatorColor,
                     unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
                     unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )

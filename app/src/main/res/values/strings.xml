@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">EventParser</string>
+    <string name="app_name">DevEvents</string>
 
     <!-- Navigation -->
     <string name="nav_events">Мероприятия</string>
@@ -69,7 +69,7 @@
     <string name="settings_cache_cleared">Кэш очищен</string>
     <string name="settings_app_version_format">Версия %1$s</string>
     <string name="settings_app_description">Приложение для поиска IT-мероприятий</string>
-    <string name="settings_app_display_name">Event Parser</string>
+    <string name="settings_app_display_name">DevEvents</string>
     <string name="settings_system">Система</string>
     <string name="settings_notifications">Уведомления</string>
     <string name="settings_notifications_subtitle">Открыть системные настройки уведомлений</string>
@@ -78,9 +78,22 @@
     <string name="settings_more">Дополнительно</string>
     <string name="settings_share_app">Поделиться приложением</string>
     <string name="settings_share_app_subtitle">Отправить ссылку друзьям или коллегам</string>
-    <string name="settings_share_app_text">Попробуй EventParser — приложение для поиска IT-мероприятий: %1$s</string>
+    <string name="settings_share_app_text">Попробуй DevEvents — приложение для поиска IT-мероприятий: %1$s</string>
+    <string name="settings_feedback_title">Оставить фидбэк</string>
+    <string name="settings_feedback_subtitle">Нашли баг? Вашего мероприятия нет в списке?</string>
+    <string name="settings_feedback_chooser">Отправить письмо</string>
+    <string name="settings_feedback_email_subject_format">DevEvents: фидбэк (версия %1$s)</string>
+    <string name="settings_feedback_email_body">Опишите проблему или предложение:\n\n— Что вы ожидали увидеть?\n— Что произошло на самом деле?\n— Как повторить?\n\nЕсли это мероприятие — пришлите ссылку/описание и дату.</string>
     <string name="settings_rate_app">Оценить приложение</string>
     <string name="settings_rate_app_subtitle">Открыть страницу в магазине</string>
+
+    <string name="settings_donation">Поддержать разработчика</string>
+    <string name="settings_donation_action">Поддержать разработчика</string>
+    <string name="settings_donation_dialog_title">Поддержать разработку</string>
+    <string name="settings_donation_copy_details">Скопировать реквизиты</string>
+    <string name="settings_donation_close">Закрыть</string>
+    <string name="settings_donation_details_copied">Реквизиты скопированы</string>
+    <string name="settings_donation_details">89287530026</string>
 
     <!-- Categories -->
     <string name="category_all">Все</string>

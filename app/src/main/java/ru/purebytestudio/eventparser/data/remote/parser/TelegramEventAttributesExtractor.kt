@@ -169,4 +169,3 @@ internal class TelegramEventAttributesExtractor {
         )
     }
 }
-
