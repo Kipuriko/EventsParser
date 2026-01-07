@@ -27,6 +27,10 @@ internal class TelegramChannelProvider {
         EventCategory.OTHER to listOf(
             "itevents",     // t.me/itevents
             "iteventsrus",  // t.me/iteventsrus
+            "iteventsjuniors", // t.me/iteventsjuniors
+            "meetup_it", // t.me/meetup_it
+            "hackathons", // t.me/hackathons
+            "hackathonsrus", // t.me/hackathons
             "ITMeeting",    // t.me/ITMeeting
             "js_events",    // Example inferred, keeping generic lists
             "qa_events"

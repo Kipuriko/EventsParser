@@ -183,4 +183,84 @@ class TelegramDateExtractorTest {
         )
         assertNull(info)
     }
+
+    @Test
+    fun exhibitionDate_withDateRange_parsesStartDate() {
+        val publishedAt = LocalDateTime.of(
+            2026,
+            1,
+            7,
+            10,
+            0
+        )
+        val text = """
+            iAGRI 2026
+            
+            Дата проведения: 21.01.2026 - 23.01.2026. Начало 21.01.2026 в 08:00
+            
+            Место проведения: Москва , Крокус Экспо
+            
+            Организатором выступает российская выставочная компания
+        """.trimIndent()
+
+        val info = extractor.extractDateInfo(
+            text = text,
+            publishedAt = publishedAt
+        )
+        assertNotNull(info)
+        requireNotNull(info)
+
+        assertEquals(
+            2026,
+            info.start.year
+        )
+        assertEquals(
+            1,
+            info.start.monthValue
+        )
+        assertEquals(
+            21,
+            info.start.dayOfMonth
+        )
+    }
+
+    @Test
+    fun competitionDate_withCallForApplications_parsesDate() {
+        val publishedAt = LocalDateTime.of(
+            2026,
+            1,
+            7,
+            10,
+            0
+        )
+        val text = """
+            Data Fusion Awards 2026. Прием заявок
+            
+            Дата проведения: 19.01.2026 - 20.01.2026. Начало 19.01.2026 в 10:00
+            
+            Место проведения: Онлайн
+            
+            Конкурс направлен на продвижение технологий работы с данными и ИИ.
+        """.trimIndent()
+
+        val info = extractor.extractDateInfo(
+            text = text,
+            publishedAt = publishedAt
+        )
+        assertNotNull(info)
+        requireNotNull(info)
+
+        assertEquals(
+            2026,
+            info.start.year
+        )
+        assertEquals(
+            1,
+            info.start.monthValue
+        )
+        assertEquals(
+            19,
+            info.start.dayOfMonth
+        )
+    }
 }

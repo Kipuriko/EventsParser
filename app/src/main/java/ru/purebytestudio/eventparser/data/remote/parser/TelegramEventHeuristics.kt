@@ -15,9 +15,10 @@ internal class TelegramEventHeuristics {
         val lower = text.lowercase(ruLocale)
 
         // жёсткий стоп-лист для рекламы/промо
+        // Важно: некоторые маркеры требуют более точного сопоставления (word boundaries),
+        // чтобы не блокировать валидные слова типа "инновации"
         val promoMarkers = listOf(
             "реклама",
-            "инн",
             "ооо",
             "акция",
             "скидк",
@@ -28,7 +29,11 @@ internal class TelegramEventHeuristics {
         )
         if (promoMarkers.any { lower.contains(it) }) return false
 
-        // должен быть хотя бы один маркер “мероприятия” (тип или явные слова)
+        // Специальные проверки для "инн" - только если это отдельное слово (ИНН организации)
+        // Не блокируем "инновации", "инновационный", "машинный" и т.д.
+        if (Regex("""\bинн\b""").find(lower) != null) return false
+
+        // должен быть хотя бы один маркер "мероприятия" (тип или явные слова)
         val eventMarkers = listOf(
             "митап",
             "конференц",
@@ -48,7 +53,13 @@ internal class TelegramEventHeuristics {
             "фестиваль",
             "дайджест",
             "афиша",
-            "челлендж"
+            "челлендж",
+            "выстав",
+            "конкурс",
+            "awards",
+            "прием заявок",
+            "регистрац",
+            "экспо"
         )
         return eventMarkers.any { lower.contains(it) }
     }
