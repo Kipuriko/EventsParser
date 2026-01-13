@@ -2,6 +2,7 @@ package ru.purebytestudio.eventparser.di
 
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
+import ru.purebytestudio.eventparser.domain.usecase.CleanupDuplicateEventsUseCase
 import ru.purebytestudio.eventparser.domain.usecase.CleanupPastEventsUseCase
 import ru.purebytestudio.eventparser.domain.usecase.GetEventByIdUseCase
 import ru.purebytestudio.eventparser.domain.usecase.GetFavoriteEventsSnapshotUseCase
@@ -20,4 +21,5 @@ val useCaseModule = module {
     factoryOf(::GetEventByIdUseCase)
     factoryOf(::ImportFavoriteEventsUseCase)
     factoryOf(::CleanupPastEventsUseCase)
+    factoryOf(::CleanupDuplicateEventsUseCase)
 }

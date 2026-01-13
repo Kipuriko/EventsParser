@@ -78,6 +78,8 @@ fun SettingsScreen(
         appLink
     )
 
+    val duplicatesCleanedMessage = stringResource(R.string.settings_duplicates_cleaned_format)
+    
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is SettingsSideEffect.ShowMessage -> {
@@ -86,6 +88,15 @@ fun SettingsScreen(
 
             SettingsSideEffect.CacheCleared -> {
                 notifier.showSuccess(cacheClearedMessage)
+            }
+
+            is SettingsSideEffect.DuplicatesCleaned -> {
+                val message = duplicatesCleanedMessage.format(sideEffect.count)
+                if (sideEffect.count > 0) {
+                    notifier.showSuccess(message)
+                } else {
+                    notifier.showInfo("Дубликаты не найдены")
+                }
             }
         }
     }
@@ -232,6 +243,7 @@ fun SettingsScreen(
                     }
                 },
                 onClearCacheClick = viewModel::clearCache,
+                onCleanupDuplicatesClick = viewModel::cleanupDuplicates,
                 onOpenNotificationSettings = onOpenNotificationSettings,
                 onOpenAppSettings = onOpenAppDetailsSettings,
                 onShareApp = onShareClick,
@@ -279,6 +291,7 @@ private fun SettingsContent(
     state: SettingsState,
     onThemeSelected: (Boolean?) -> Unit,
     onClearCacheClick: () -> Unit,
+    onCleanupDuplicatesClick: () -> Unit,
     onOpenNotificationSettings: () -> Unit,
     onOpenAppSettings: () -> Unit,
     onShareApp: () -> Unit,
@@ -309,7 +322,16 @@ private fun SettingsContent(
                         subtitle = stringResource(R.string.settings_clear_cache_subtitle),
                         icon = Icons.Default.Delete,
                         onClick = onClearCacheClick,
-                        showDivider = false
+                        showDivider = true,
+                        isLoading = false
+                    )
+                    SettingsActionItem(
+                        title = stringResource(R.string.settings_cleanup_duplicates),
+                        subtitle = stringResource(R.string.settings_cleanup_duplicates_subtitle),
+                        icon = Icons.Default.Delete,
+                        onClick = onCleanupDuplicatesClick,
+                        showDivider = false,
+                        isLoading = state.isCleaningDuplicates
                     )
                 }
             }

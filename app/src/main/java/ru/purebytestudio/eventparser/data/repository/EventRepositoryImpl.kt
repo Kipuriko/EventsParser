@@ -227,6 +227,10 @@ class EventRepositoryImpl(
         }
     }
 
+    override suspend fun cleanupDuplicates(): Int {
+        return eventDeduplicationService.cleanupExistingDuplicates()
+    }
+
     private data class Prepared(
         val entities: List<EventEntity>,
         val summary: EventRefreshSummary

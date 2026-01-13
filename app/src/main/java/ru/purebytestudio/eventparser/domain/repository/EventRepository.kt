@@ -59,4 +59,12 @@ interface EventRepository {
      * Очистка прошедших событий (кроме избранных)
      */
     suspend fun cleanupPastEvents()
+
+    /**
+     * Очистка дубликатов событий в базе данных.
+     * Оставляет только лучшее событие из каждой группы дубликатов.
+     *
+     * @return количество удаленных дубликатов
+     */
+    suspend fun cleanupDuplicates(): Int
 }

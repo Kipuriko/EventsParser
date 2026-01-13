@@ -177,13 +177,17 @@ internal fun SettingsActionItem(
     subtitle: String? = null,
     icon: ImageVector,
     onClick: () -> Unit,
-    showDivider: Boolean = true
+    showDivider: Boolean = true,
+    isLoading: Boolean = false
 ) {
     Column {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClick = onClick)
+                .clickable(
+                    enabled = !isLoading,
+                    onClick = onClick
+                )
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -194,11 +198,19 @@ internal fun SettingsActionItem(
                     .clip(CircleShape),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary
-                )
+                if (isLoading) {
+                    androidx.compose.material3.CircularProgressIndicator(
+                        modifier = Modifier.size(24.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
 
             Column(modifier = Modifier.weight(1f)) {

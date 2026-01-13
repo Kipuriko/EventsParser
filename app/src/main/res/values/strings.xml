@@ -67,6 +67,9 @@
     <string name="settings_clear_cache">Очистить кэш</string>
     <string name="settings_clear_cache_subtitle">Освободить место на устройстве</string>
     <string name="settings_cache_cleared">Кэш очищен</string>
+    <string name="settings_cleanup_duplicates">Очистить дубликаты</string>
+    <string name="settings_cleanup_duplicates_subtitle">Удалить повторяющиеся события</string>
+    <string name="settings_duplicates_cleaned_format">Удалено дубликатов: %d</string>
     <string name="settings_app_version_format">Версия %1$s</string>
     <string name="settings_app_description">Приложение для поиска IT-мероприятий</string>
     <string name="settings_app_display_name">DevEvents</string>

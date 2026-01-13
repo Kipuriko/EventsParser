@@ -10,7 +10,7 @@ import ru.purebytestudio.eventparser.data.local.entity.EventEntityConverters
 @Database(
     entities = [EventEntity::class],
     version = 3,
-    exportSchema = false,
+    exportSchema = true,
 )
 @TypeConverters(EventEntityConverters::class)
 abstract class AppDatabase : RoomDatabase() {

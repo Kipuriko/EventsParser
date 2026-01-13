@@ -1,9 +1,27 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
+}
+
+// Загрузка local.properties для получения release signing credentials
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        FileInputStream(localPropertiesFile).use { fis ->
+            load(fis)
+        }
+    }
+}
+
+// Функция для получения свойства из local.properties или gradle.properties
+fun getLocalProperty(key: String): String? {
+    return localProperties.getProperty(key) ?: project.findProperty(key) as String?
 }
 
 android {
@@ -23,6 +41,33 @@ android {
         }
     }
 
+    signingConfigs {
+        create("release") {
+            val keystorePath = getLocalProperty("RELEASE_STORE_FILE")
+            val keystorePassword = getLocalProperty("RELEASE_STORE_PASSWORD")
+            val keystoreAlias = getLocalProperty("RELEASE_KEY_ALIAS")
+            val keystoreKeyPassword = getLocalProperty("RELEASE_KEY_PASSWORD")
+
+            if (keystorePath != null && keystorePassword != null && keystoreAlias != null && keystoreKeyPassword != null) {
+                val keystoreFile = file(keystorePath)
+                if (keystoreFile.exists()) {
+                    storeFile = keystoreFile
+                    storePassword = keystorePassword
+                    keyAlias = keystoreAlias
+                    keyPassword = keystoreKeyPassword
+                    println("✓ Release signing configured with keystore: ${keystoreFile.absolutePath}")
+                } else {
+                    println("⚠ Keystore file not found: ${keystoreFile.absolutePath}")
+                    println("  Release build will use debug signing")
+                }
+            } else {
+                println("⚠ Release signing credentials not found in local.properties")
+                println("  Add RELEASE_* properties to local.properties to enable release signing")
+                println("  Release build will use debug signing")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -31,7 +76,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
+            val releaseConfig = signingConfigs.getByName("release")
+            signingConfig = if (releaseConfig.storeFile?.exists() == true) {
+                releaseConfig
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
         debug {
             isMinifyEnabled = false
@@ -51,8 +101,22 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+            pickFirsts += "META-INF/DEPENDENCIES"
+        }
+        jniLibs {
+            useLegacyPackaging = false
         }
     }
+}
+
+// Room schema export для отслеживания изменений БД
+ksp {
+    arg(
+        "room.schemaLocation",
+        "$projectDir/schemas"
+    )
 }
 
 dependencies {

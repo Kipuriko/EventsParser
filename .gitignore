@@ -1,5 +1,6 @@
 *.iml
 .gradle
+local.properties
 /local.properties
 /.idea/caches
 /.idea/libraries
@@ -29,3 +30,6 @@ ehthumbs.db
 Desktop.ini
 .DS_Store?
 ._*
+
+# Keystore
+release.keystore

@@ -18,6 +18,9 @@ interface EventDao {
     @Query("SELECT * FROM events WHERE isFavorite = 1 ORDER BY dateTime ASC")
     suspend fun getFavoriteEventsList(): List<EventEntity>
 
+    @Query("SELECT * FROM events ORDER BY dateTime ASC")
+    suspend fun getAllEvents(): List<EventEntity>
+
     @Query("SELECT * FROM events WHERE id = :id")
     suspend fun getEventById(id: String): EventEntity?
 
