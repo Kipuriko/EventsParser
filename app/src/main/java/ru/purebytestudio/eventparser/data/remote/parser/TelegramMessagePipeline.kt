@@ -40,16 +40,26 @@ internal class TelegramMessagePipeline(
 
         val publishedAt = extractPublishedAt(message) ?: LocalDateTime.now()
         val messageUrl = "https://t.me/$channelName/$messageId"
-        val imageUrl = imageExtractor.extractImageUrl(message)
+
+        // Извлечение изображения с защитой от ошибок
+        val imageUrl = runCatching { imageExtractor.extractImageUrl(message) }
+            .onFailure {
+                Timber.w(
+                    it,
+                    "Ошибка при извлечении изображения: $messageUrl"
+                )
+            }
+            .getOrNull()
 
         val textElement = message.selectFirst(".tgme_widget_message_text") ?: return emptyList()
-        val description =
-            textSanitizer.sanitizeTelegramArtifacts(
-                htmlTextExtractor.toTextPreservingFormatting(textElement)
-            ).trim()
+
+        val description = textSanitizer.sanitizeTelegramArtifacts(
+            htmlTextExtractor.toTextPreservingFormatting(textElement)
+        ).trim()
+        
         if (description.isBlank()) return emptyList()
 
-        // 1) Спец-кейс: дайджесты/афиши (в одном сообщении несколько событий)
+        // 1) Спец-кейс: дайджесты/афиши
         digestParser.parseDigestItems(
             fullText = description,
             fallbackUrl = messageUrl,
@@ -62,24 +72,24 @@ internal class TelegramMessagePipeline(
         }
 
         // 2) Обычный пост: 1 событие
-        // 0) Фильтр: отсеиваем рекламные/промо-посты и “акции”, даже если там есть дата
         if (!heuristics.looksLikeEvent(description)) return emptyList()
 
         val dateInfo = extractDateInfo(
-            text = description,
-            publishedAt = publishedAt
+            description,
+            publishedAt
         ) ?: return emptyList()
 
         if (!heuristics.isInAllowedWindow(dateInfo.start)) {
-            Timber.d("Skip: date out of window: ${dateInfo.start} ($organizer)")
+            Timber.d("Пропуск события вне временного окна: ${dateInfo.start}")
             return emptyList()
         }
 
         val title = titleExtractor.extractTitle(description)
         if (title.isBlank()) return emptyList()
 
-        val detectedType = EventType.fromText("$title\n$description")
-        val detectedCategory = EventCategory.fromText("$title\n$description")
+        val fullText = "$title\n$description"
+        val detectedType = EventType.fromText(fullText)
+        val detectedCategory = EventCategory.fromText(fullText)
         val finalCategory =
             if (detectedCategory != EventCategory.OTHER) detectedCategory else category
 
@@ -106,12 +116,17 @@ internal class TelegramMessagePipeline(
             format
         )
 
+        // Fallback для inline изображений
+        val finalImageUrl = imageUrl ?: runCatching {
+            imageExtractor.extractInlineImageUrl(textElement)
+        }.getOrNull()
+
         return listOf(
             Event(
                 id = "tg_${channelName}_$messageId",
                 title = title,
                 description = description,
-                imageUrl = imageUrl ?: imageExtractor.extractInlineImageUrl(textElement),
+                imageUrl = finalImageUrl,
                 dateTime = dateInfo.start,
                 endDateTime = dateInfo.end,
                 location = location,

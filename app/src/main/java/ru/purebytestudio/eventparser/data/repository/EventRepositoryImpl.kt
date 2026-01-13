@@ -117,6 +117,13 @@ class EventRepositoryImpl(
             eventDeduplicationService.removeDuplicatesFromDatabase(eventsToReallyInsert)
 
             eventDao.insertEvents(eventsToReallyInsert)
+
+            // Автоматически очищаем существующие дубликаты в БД после вставки новых событий
+            val removedDuplicates = eventDeduplicationService.cleanupExistingDuplicates()
+            if (removedDuplicates > 0) {
+                Timber.i("Автоматически удалено $removedDuplicates дубликатов после обновления")
+            }
+            
             cleanupPastEvents()
 
             Result.success(prepared.summary)

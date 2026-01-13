@@ -16,12 +16,17 @@ class EventDeduplicationService(private val eventDao: EventDao) {
         /**
          * Порог сходства заголовков для определения дубликатов (от 0.0 до 1.0).
          * 0.65 означает, что заголовки должны быть похожи на 65%, чтобы считаться дубликатами.
-         * Этот порог подобран экспериментально и позволяет ловить события с небольшими
-         * вариациями в названии (например, "Запускаем 2026 год с правильного запуска LLM"
-         * и "Запускаем год с запуска LLM").
          */
-        private const val SIMILARITY_THRESHOLD = 0.65
+        private const val TITLE_SIMILARITY_THRESHOLD = 0.65
+
+        /**
+         * Порог сходства описаний для определения дубликатов (от 0.0 до 1.0).
+         * 0.55 - более низкий порог, так как описания могут значительно отличаться,
+         * но всё равно описывать одно и то же событие.
+         */
+        private const val DESCRIPTION_SIMILARITY_THRESHOLD = 0.55
     }
+
     /**
      * Удаляет дубликаты из базы данных перед вставкой новых.
      * Оставляет события, помеченные как избранные.
@@ -48,11 +53,11 @@ class EventDeduplicationService(private val eventDao: EventDao) {
             // Тяжелые вычисления хешей выносим в фоновый поток
             val duplicateIds = withContext(Dispatchers.Default) {
                 // Сначала строим карту нормализованных ключей для быстрого поиска точных дубликатов
-                val newEventKeys = newEvents.associate { event ->
+                val newEventKeys = newEvents.associateBy { event ->
                     EventIdentityNormalizer.fromPersisted(
                         event.title,
                         event.dateTime
-                    ) to event
+                    )
                 }
 
                 // Группируем новые события по дате для оптимизации
@@ -76,14 +81,30 @@ class EventDeduplicationService(private val eventDao: EventDao) {
                     // Стратегия 2: Similarity-based matching для событий с той же датой
                     val sameDateNewEvents = newEventsByDate[existingDate] ?: emptyList()
                     for (newEvent in sameDateNewEvents) {
-                        if (TextSimilarity.areSimilar(
-                                existingEvent.title,
-                                newEvent.title,
-                                SIMILARITY_THRESHOLD
-                            )
-                        ) {
+                        // Проверяем наличие общих ключевых названий событий
+                        val hasCommonNames = TextSimilarity.hasCommonEventNames(
+                            existingEvent.description,
+                            newEvent.description
+                        )
+
+                        // Проверяем сходство заголовков
+                        val titleSimilar = TextSimilarity.areSimilar(
+                            title1 = existingEvent.title,
+                            title2 = newEvent.title,
+                            threshold = TITLE_SIMILARITY_THRESHOLD
+                        )
+
+                        // Проверяем сходство описаний (для случаев с разными заголовками)
+                        val descriptionSimilar = TextSimilarity.areSimilar(
+                            title1 = existingEvent.description,
+                            title2 = newEvent.description,
+                            threshold = DESCRIPTION_SIMILARITY_THRESHOLD
+                        )
+
+                        if (hasCommonNames || titleSimilar || descriptionSimilar) {
                             Timber.d(
-                                "Найден похожий дубликат: '${existingEvent.title}' ≈ '${newEvent.title}'"
+                                "Найден похожий дубликат: '${existingEvent.title}' ≈ '${newEvent.title}' " +
+                                        "(commonNames=$hasCommonNames, titleSimilar=$titleSimilar, descriptionSimilar=$descriptionSimilar)"
                             )
                             return@mapNotNull existingEvent.id
                         }
@@ -131,8 +152,8 @@ class EventDeduplicationService(private val eventDao: EventDao) {
             // Создаём карту нормализованных ключей избранных событий
             val favoriteKeyToEvent = favoriteEvents.associateBy {
                 EventIdentityNormalizer.fromPersisted(
-                    it.title,
-                    it.dateTime
+                    title = it.title,
+                    dateTime = it.dateTime
                 )
             }
 
@@ -141,8 +162,8 @@ class EventDeduplicationService(private val eventDao: EventDao) {
 
             newEvents.filter { newEvent ->
                 val newEventKey = EventIdentityNormalizer.fromPersisted(
-                    newEvent.title,
-                    newEvent.dateTime
+                    title = newEvent.title,
+                    dateTime = newEvent.dateTime
                 )
                 val newEventDate = newEvent.dateTime?.take(10)
 
@@ -157,12 +178,24 @@ class EventDeduplicationService(private val eventDao: EventDao) {
                 // Стратегия 2: Проверяем сходство с избранными событиями той же даты
                 val sameDateFavorites = favoritesByDate[newEventDate] ?: emptyList()
                 for (favorite in sameDateFavorites) {
-                    if (TextSimilarity.areSimilar(
-                            newEvent.title,
-                            favorite.title,
-                            SIMILARITY_THRESHOLD
-                        )
-                    ) {
+                    val hasCommonNames = TextSimilarity.hasCommonEventNames(
+                        text1 = newEvent.description,
+                        text2 = favorite.description
+                    )
+
+                    val titleSimilar = TextSimilarity.areSimilar(
+                        title1 = newEvent.title,
+                        title2 = favorite.title,
+                        threshold = TITLE_SIMILARITY_THRESHOLD
+                    )
+
+                    val descriptionSimilar = TextSimilarity.areSimilar(
+                        title1 = newEvent.description,
+                        title2 = favorite.description,
+                        threshold = DESCRIPTION_SIMILARITY_THRESHOLD
+                    )
+
+                    if (hasCommonNames || titleSimilar || descriptionSimilar) {
                         Timber.d(
                             "Пропуск нового события '${newEvent.title}' - похоже на избранное '${favorite.title}'"
                         )
@@ -228,12 +261,24 @@ class EventDeduplicationService(private val eventDao: EventDao) {
                             val event2 = remainingEvents[j]
                             if (event2.id in idsToDelete) continue
 
-                            if (TextSimilarity.areSimilar(
-                                    event1.title,
-                                    event2.title,
-                                    SIMILARITY_THRESHOLD
-                                )
-                            ) {
+                            val hasCommonNames = TextSimilarity.hasCommonEventNames(
+                                text1 = event1.description,
+                                text2 = event2.description
+                            )
+
+                            val titleSimilar = TextSimilarity.areSimilar(
+                                title1 = event1.title,
+                                title2 = event2.title,
+                                threshold = TITLE_SIMILARITY_THRESHOLD
+                            )
+
+                            val descriptionSimilar = TextSimilarity.areSimilar(
+                                title1 = event1.description,
+                                title2 = event2.description,
+                                threshold = DESCRIPTION_SIMILARITY_THRESHOLD
+                            )
+
+                            if (hasCommonNames || titleSimilar || descriptionSimilar) {
                                 // Найдены похожие события
                                 val toKeep = selectBestEvent(
                                     listOf(
@@ -261,8 +306,8 @@ class EventDeduplicationService(private val eventDao: EventDao) {
             }
         } catch (e: Exception) {
             Timber.e(
-                e,
-                "Ошибка при очистке существующих дубликатов"
+                t = e,
+                message = "Ошибка при очистке существующих дубликатов"
             )
             0
         }

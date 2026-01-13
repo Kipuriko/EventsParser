@@ -3,10 +3,32 @@ package ru.purebytestudio.eventparser.data.remote.parser
 /**
  * Извлечение заголовка (title) события из текста Telegram-поста.
  *
- * Важно: заголовок часто “шумный” (эмодзи/ссылки/хэштеги), поэтому здесь много эвристик.
+ * Важно: заголовок часто "шумный" (эмодзи/ссылки/хэштеги), поэтому здесь много эвристик.
  */
 internal class TelegramTitleExtractor {
+    companion object {
+        // Паттерны для поиска названий событий
+        private val eventNamePatterns = listOf(
+            // "Название Conf/Conference" и т.д.
+            Regex(
+                """([A-ZА-Я][A-Za-zА-Яа-я0-9\s\-]+)\s+(Conf|Conference|Митап|Meetup|Hackathon|Хакатон|Summit|Саммит|Fest|Фестиваль|Forum|Форум)\b""",
+                RegexOption.IGNORE_CASE
+            ),
+            // "Название" в кавычках
+            Regex("""[«""]([^»""]{4,60})[»""]"""),
+            // Заглавные слова (например, "T-Sync Conf")
+            Regex("""(?:^|\n)([A-ZА-Я][A-Za-z0-9]+(?:[\s\-][A-ZА-Я][A-Za-z0-9]+){1,4})\s*[—\-:]""")
+        )
+    }
+
     fun extractTitle(text: String): String {
+        // Сначала пробуем найти название события по паттернам
+        val eventNameCandidate = findEventNameByPattern(text)
+        if (eventNameCandidate.isNotEmpty()) {
+            return eventNameCandidate.take(120)
+        }
+
+        // Затем используем старую логику построчного поиска
         val lines = text.lines()
             .map { it.trim() }
             .filter { it.isNotBlank() }
@@ -18,6 +40,23 @@ internal class TelegramTitleExtractor {
             if (candidate.length >= 4) return candidate.take(120)
         }
 
+        return ""
+    }
+
+    /**
+     * Ищет название события по характерным паттернам в тексте.
+     */
+    private fun findEventNameByPattern(text: String): String {
+        for (pattern in eventNamePatterns) {
+            val match = pattern.find(text)
+            if (match != null && match.groupValues.size > 1) {
+                val candidate = match.groupValues[1].trim()
+                // Проверяем, что это не слишком длинная фраза
+                if (candidate.length in 4..80 && candidate.split(" ").size <= 6) {
+                    return candidate
+                }
+            }
+        }
         return ""
     }
 

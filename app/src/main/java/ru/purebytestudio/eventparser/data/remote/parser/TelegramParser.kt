@@ -34,7 +34,7 @@ internal class TelegramParser(
         private const val TIMEOUT_MS = 15000
         private const val TELEGRAM_URL_FORMAT = "https://t.me/s/%s"
         private const val MESSAGE_SELECTOR = ".tgme_widget_message"
-        private const val PARSE_LIMIT = 10
+        private const val PARSE_LIMIT = 30  // Увеличено с 10 до 30 для большего охвата событий
     }
 
     override suspend fun parseEvents(categories: List<EventCategory>): Result<List<Event>> =
@@ -98,27 +98,28 @@ internal class TelegramParser(
             .get()
 
         val messages = doc.select(MESSAGE_SELECTOR)
-        // Берём последние PARSE_LIMIT сообщений.
-        // В web-превью Telegram последние сообщения обычно «внизу», а `select()` возвращает DOM-порядок,
-        // поэтому нам важны именно последние элементы списка.
+
+        // Берём последние PARSE_LIMIT сообщений
         val recentMessages = messages.takeLast(PARSE_LIMIT)
+        Timber.d("Канал ${channel.name}: парсим ${recentMessages.size}/${messages.size} сообщений")
 
-        val events = mutableListOf<Event>()
-
-        for (message in recentMessages) {
-            try {
-                val parsedEvents = messagePipeline.parse(
-                    message = message,
-                    channelName = channel.name,
-                    category = channel.category
+        val events = recentMessages.mapNotNull { message ->
+            runCatching {
+                messagePipeline.parse(
+                    message,
+                    channel.name,
+                    channel.category
                 )
-                events.addAll(parsedEvents)
-            } catch (e: Exception) {
+            }.onFailure {
                 Timber.w(
-                    e,
-                    "Error parsing message in ${channel.name}"
+                    it,
+                    "Ошибка при парсинге сообщения в ${channel.name}"
                 )
-            }
+            }.getOrNull()
+        }.flatten()
+
+        if (events.isNotEmpty()) {
+            Timber.d("Канал ${channel.name}: спарсено ${events.size} событий")
         }
 
         return events

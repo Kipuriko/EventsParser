@@ -89,14 +89,8 @@
     <string name="settings_feedback_email_body">Опишите проблему или предложение:\n\n— Что вы ожидали увидеть?\n— Что произошло на самом деле?\n— Как повторить?\n\nЕсли это мероприятие — пришлите ссылку/описание и дату.</string>
     <string name="settings_rate_app">Оценить приложение</string>
     <string name="settings_rate_app_subtitle">Открыть страницу в магазине</string>
-
     <string name="settings_donation">Поддержать разработчика</string>
-    <string name="settings_donation_action">Поддержать разработчика</string>
-    <string name="settings_donation_dialog_title">Поддержать разработку</string>
-    <string name="settings_donation_copy_details">Скопировать реквизиты</string>
-    <string name="settings_donation_close">Закрыть</string>
-    <string name="settings_donation_details_copied">Реквизиты скопированы</string>
-    <string name="settings_donation_details">89287530026</string>
+    <string name="settings_donation_action">Угостить разработчика ☕</string>
 
     <!-- Categories -->
     <string name="category_all">Все</string>

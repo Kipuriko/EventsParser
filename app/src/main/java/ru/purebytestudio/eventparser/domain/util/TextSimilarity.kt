@@ -4,6 +4,26 @@ package ru.purebytestudio.eventparser.domain.util
  * Утилита для вычисления сходства между строками.
  */
 object TextSimilarity {
+    // Ключевые слова, указывающие на название события
+    private val eventKeywords = setOf(
+        "conf",
+        "conference",
+        "конференция",
+        "meetup",
+        "митап",
+        "summit",
+        "саммит",
+        "hackathon",
+        "хакатон",
+        "fest",
+        "festival",
+        "фестиваль",
+        "forum",
+        "форум",
+        "days",
+        "week",
+        "неделя"
+    )
     /**
      * Вычисляет коэффициент Жаккара (Jaccard similarity) между двумя строками.
      * Возвращает значение от 0.0 (совершенно различные) до 1.0 (идентичные).
@@ -106,6 +126,15 @@ object TextSimilarity {
         // Если строки идентичны после нормализации
         if (normalized1 == normalized2) return true
 
+        // Проверяем наличие общих ключевых названий событий
+        if (hasCommonEventNames(
+                title1,
+                title2
+            )
+        ) {
+            return true
+        }
+
         // Используем комбинированный подход: Жаккар + Левенштейн
         val jaccardScore = jaccardSimilarity(
             normalized1,
@@ -120,5 +149,86 @@ object TextSimilarity {
         val combinedScore = (jaccardScore + levenshteinScore) / 2.0
 
         return combinedScore >= threshold
+    }
+
+    /**
+     * Проверяет, есть ли в двух текстах общие ключевые названия событий.
+     */
+    fun hasCommonEventNames(
+        text1: String,
+        text2: String
+    ): Boolean {
+        val names1 = extractEventNames(text1)
+        if (names1.isEmpty()) return false
+
+        val names2 = extractEventNames(text2)
+        if (names2.isEmpty()) return false
+
+        val normalizedNames1 = names1.mapTo(HashSet()) { it.lowercase().trim() }
+
+        return names2.any { name ->
+            val normalized = name.lowercase().trim()
+            normalized.length > 5 && normalized in normalizedNames1
+        }
+    }
+
+    /**
+     * Извлекает потенциальные названия событий из текста.
+     * Оптимизированный алгоритм на основе n-грамм и ключевых слов.
+     */
+    private fun extractEventNames(text: String): List<String> {
+        val names = mutableSetOf<String>()
+        val words = text.split(Regex("""[\s\n]+""")).filter { it.isNotEmpty() }
+
+        if (words.isEmpty()) return emptyList()
+
+        // Предварительная проверка: есть ли вообще ключевые слова
+        val textLower = text.lowercase()
+        val hasAnyKeyword = eventKeywords.any { textLower.contains(it) }
+
+        if (hasAnyKeyword) {
+            // Ищем n-граммы (2-5 слов) с ключевыми словами
+            for (i in words.indices) {
+                for (n in 2..5) {
+                    if (i + n > words.size) break
+
+                    val ngram = words.subList(
+                        i,
+                        i + n
+                    )
+
+                    // Ранний выход: проверяем заглавную букву
+                    if (ngram[0].firstOrNull()?.isUpperCase() != true) continue
+
+                    // Проверяем наличие ключевого слова
+                    val ngramLower = ngram.joinToString(" ").lowercase()
+                    val hasKeyword = eventKeywords.any { ngramLower.contains(it) }
+
+                    if (hasKeyword) {
+                        val ngramText = ngram.joinToString(" ")
+                        if (ngramText.length in 5..60) {
+                            names.add(
+                                ngramText.trimEnd(
+                                    '.',
+                                    ',',
+                                    '!',
+                                    '?',
+                                    ':',
+                                    ';'
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        // Ищем составные названия (KotlinConf, DevOps)
+        Regex("""[A-ZА-Я][a-zа-я]+[A-ZА-Я][A-Za-zА-Яа-я0-9]+""")
+            .findAll(text)
+            .mapNotNull { it.value.takeIf { name -> name.length in 5..40 } }
+            .forEach { names.add(it) }
+
+        return names.toList()
     }
 }
