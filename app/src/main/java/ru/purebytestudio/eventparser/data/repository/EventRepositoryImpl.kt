@@ -1,5 +1,11 @@
 package ru.purebytestudio.eventparser.data.repository
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import coil.ImageLoader
+import coil.request.ImageRequest
+import coil.request.SuccessResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -18,7 +24,12 @@ import ru.purebytestudio.eventparser.platform.ErrorMessageProvider
 import ru.purebytestudio.eventparser.platform.NetworkStatusProvider
 import ru.purebytestudio.eventparser.platform.RetryPolicy
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.Instant
+import ru.purebytestudio.eventparser.data.remote.parser.TelegramDateExtractor
 
 /**
  * Реализация [EventRepository] для приложения.
@@ -42,7 +53,8 @@ class EventRepositoryImpl(
     private val retryPolicy: RetryPolicy,
     private val errorMessageProvider: ErrorMessageProvider,
     private val eventDeduplicationService: EventDeduplicationService,
-    private val reminderScheduler: EventReminderScheduler
+    private val reminderScheduler: EventReminderScheduler,
+    private val context: Context
 ) : EventRepository {
     private val defaultCategories = EventCategory.entries
 
@@ -208,17 +220,77 @@ class EventRepositoryImpl(
     override suspend fun toggleFavorite(eventId: String) {
         val current = eventDao.isFavorite(eventId) ?: return
         val newValue = !current
-        eventDao.setFavorite(
-            eventId,
-            newValue
-        )
-
-        val updated = eventDao.getEventById(eventId)?.toDomain() ?: return
 
         if (newValue) {
-            reminderScheduler.scheduleForEvent(updated)
+            val event = eventDao.getEventById(eventId)?.toDomain()
+            if (event != null && event.imageUrl != null) {
+                val localPath = downloadAndSaveImage(event.imageUrl, event.id)
+                if (localPath != null) {
+                    eventDao.setLocalImagePath(eventId, localPath)
+                }
+            }
+            eventDao.setFavorite(eventId, true)
+            
+            eventDao.getEventById(eventId)?.toDomain()?.let { updated ->
+                reminderScheduler.scheduleForEvent(updated)
+            }
         } else {
+            val event = eventDao.getEventById(eventId)?.toDomain()
+            if (event?.localImagePath != null) {
+                deleteLocalImage(event.localImagePath)
+                eventDao.setLocalImagePath(eventId, null)
+            }
+            eventDao.setFavorite(eventId, false)
             reminderScheduler.cancelForEvent(eventId)
+        }
+    }
+
+    private suspend fun downloadAndSaveImage(url: String, eventId: String): String? {
+        return withContext(Dispatchers.IO) {
+            try {
+                val loader = ImageLoader(context)
+                val request = ImageRequest.Builder(context)
+                    .data(url)
+                    .allowHardware(false)
+                    .build()
+
+                val result = loader.execute(request)
+                if (result is SuccessResult) {
+                    val bitmap = (result.drawable as? BitmapDrawable)?.bitmap
+                    if (bitmap != null) {
+                        val imagesDir = File(context.filesDir, "event_images")
+                        if (!imagesDir.exists()) imagesDir.mkdirs()
+
+                        val extension = if (url.contains(".png", ignoreCase = true)) "png" else "jpg"
+                        val format = if (extension == "png") Bitmap.CompressFormat.PNG else Bitmap.CompressFormat.JPEG
+
+                        val fileName = "event_${eventId}.$extension"
+                        val file = File(imagesDir, fileName)
+
+                        FileOutputStream(file).use { out ->
+                            bitmap.compress(format, 90, out)
+                        }
+                        return@withContext file.absolutePath
+                    }
+                }
+                null
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to download image for event $eventId")
+                null
+            }
+        }
+    }
+
+    private suspend fun deleteLocalImage(path: String) {
+        withContext(Dispatchers.IO) {
+            try {
+                val file = File(path)
+                if (file.exists()) {
+                    file.delete()
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to delete local image: $path")
+            }
         }
     }
 
@@ -244,4 +316,40 @@ class EventRepositoryImpl(
     )
 
     private fun List<EventEntity>.toDomainList(): List<Event> = map { it.toDomain() }
+
+    override suspend fun reparseEvents() {
+        withContext(Dispatchers.Default) {
+            val allEvents = eventDao.getAllEvents()
+            val extractor = TelegramDateExtractor()
+            val zoneId = ZoneId.systemDefault()
+
+            val updatedEvents = allEvents.mapNotNull { entity ->
+                try {
+                    val publishedAt = Instant.ofEpochMilli(entity.createdAt)
+                        .atZone(zoneId)
+                        .toLocalDateTime()
+
+                    val dateInfo = extractor.extractDateInfo(entity.description, publishedAt)
+
+                    if (dateInfo != null) {
+                        entity.copy(
+                            dateTime = dateInfo.start.toString(),
+                            endDateTime = dateInfo.end?.toString(),
+                            hasSpecificTime = dateInfo.hasSpecificTime
+                        )
+                    } else {
+                        null
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "Error reparsing event ${entity.id}")
+                    null
+                }
+            }
+
+            if (updatedEvents.isNotEmpty()) {
+                eventDao.insertEvents(updatedEvents)
+                Timber.i("Reparsed dates for ${updatedEvents.size} events locally.")
+            }
+        }
+    }
 }

@@ -52,6 +52,12 @@ interface EventDao {
         isFavorite: Boolean
     )
 
+    @Query("UPDATE events SET localImagePath = :path WHERE id = :eventId")
+    suspend fun setLocalImagePath(
+        eventId: String,
+        path: String?
+    )
+
     @Query("SELECT isFavorite FROM events WHERE id = :eventId")
     suspend fun isFavorite(eventId: String): Boolean?
 

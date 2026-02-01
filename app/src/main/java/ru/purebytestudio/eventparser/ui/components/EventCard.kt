@@ -76,6 +76,7 @@ import ru.purebytestudio.eventparser.ui.theme.iOSColor
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import java.io.File
 
 @Composable
 fun EventCard(
@@ -122,15 +123,21 @@ fun EventCard(
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
             ) {
-                if (event.imageUrl != null) {
+                val hasImage = event.imageUrl != null || event.localImagePath != null
+                if (hasImage) {
                     val context = LocalContext.current
+                    val imageModel = if (!event.localImagePath.isNullOrBlank()) {
+                        File(event.localImagePath)
+                    } else {
+                        event.imageUrl
+                    }
                     val imageRequest = remember(
-                        event.imageUrl,
+                        imageModel,
                         context
                     ) {
-                        ImageRequest.Builder(context).data(event.imageUrl)
-                            .crossfade(true).crossfade(300).memoryCacheKey(event.imageUrl)
-                            .diskCacheKey(event.imageUrl).build()
+                        ImageRequest.Builder(context).data(imageModel)
+                            .crossfade(true).crossfade(300)
+                            .build()
                     }
 
                     AsyncImage(

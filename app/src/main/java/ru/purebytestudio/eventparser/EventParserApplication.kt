@@ -23,6 +23,7 @@ import ru.purebytestudio.eventparser.domain.repository.EventRepository
 import ru.purebytestudio.eventparser.domain.usecase.CleanupPastEventsUseCase
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import androidx.core.content.edit
 
 /**
  * Основной класс приложения.
@@ -107,14 +108,32 @@ class EventParserApplication : Application() {
             }
         }
 
+        // One-time repair for migration 4 (fixes incorrect time parsing in old events)
+        applicationScope.launch {
+            val prefs = getSharedPreferences("app_prefs",
+                MODE_PRIVATE
+            )
+            if (!prefs.getBoolean("MIGRATION_4_REPARSE_DONE", false)) {
+                try {
+                    val repository = GlobalContext.get().get<EventRepository>()
+                    repository.reparseEvents()
+                    prefs.edit {
+                        putBoolean(
+                            "MIGRATION_4_REPARSE_DONE",
+                            true
+                        )
+                    }
+                    Timber.i("Completed one-time event re-parsing for migration 4")
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to perform one-time event re-parsing")
+                }
+            }
+        }
+
         setupPeriodicWork()
     }
 
     private fun setupPeriodicWork() {
-        // На старых версиях приложения мог быть запланирован periodic-work для уведомлений.
-        // Сейчас напоминания планируются точечно (one-time) при добавлении в избранное.
-        WorkManager.getInstance(this).cancelUniqueWork("event_notifications")
-
         val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
             .setRequiresBatteryNotLow(false).build()
 

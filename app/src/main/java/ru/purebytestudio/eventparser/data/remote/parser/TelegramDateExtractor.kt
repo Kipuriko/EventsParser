@@ -60,7 +60,8 @@ internal class TelegramDateExtractor {
             )
             val startTime = timeRange?.first ?: extractTimeNear(
                 lines,
-                m.range
+                m.range,
+                text
             )
             val endTime = timeRange?.second
 
@@ -102,7 +103,8 @@ internal class TelegramDateExtractor {
             )
             val startTime = timeRange?.first ?: extractTimeNear(
                 lines,
-                m.range
+                m.range,
+                text
             )
             val endTime = timeRange?.second
             val hasTime = startTime != null
@@ -149,7 +151,8 @@ internal class TelegramDateExtractor {
             )
             val startTime = timeRange?.first ?: extractTimeNear(
                 lines,
-                m.range
+                m.range,
+                text
             )
             val endTime = timeRange?.second
             val hasTime = startTime != null
@@ -277,12 +280,9 @@ internal class TelegramDateExtractor {
         lines: List<String>,
         matchRange: IntRange
     ): Pair<LocalTime, LocalTime>? {
-        val (snippet, _) = extractSnippetAround(
-            lines,
-            matchRange
-        )
+        val snippet = extractSnippet(lines, matchRange)
         val rangeRegex =
-            Regex("""(?i)\bс\s*(\d{1,2})[:.](\d{2})\s*(?:до|-)\s*(\d{1,2})[:.](\d{2})\b""")
+            Regex("""(?i)\b(?:с\s*)?(\d{1,2})[:.](\d{2})\s*(?:до|-)\s*(\d{1,2})[:.](\d{2})\b(?!\.\d)""")
         val m = rangeRegex.find(snippet) ?: return null
         val h1 = m.groupValues[1].toIntOrNull() ?: return null
         val m1 = m.groupValues[2].toIntOrNull() ?: return null
@@ -303,36 +303,35 @@ internal class TelegramDateExtractor {
 
     private fun extractTimeNear(
         lines: List<String>,
-        matchRange: IntRange
+        matchRange: IntRange,
+        fullText: String? = null
     ): LocalTime? {
-        val (snippet, _) = extractSnippetAround(
-            lines,
-            matchRange
-        )
-        val m = TelegramParsingRegex.timeRegex.find(snippet) ?: return null
+        val snippet = extractSnippet(lines, matchRange)
+
+        var m = TelegramParsingRegex.timeRegex.find(snippet)
+
+        if (m == null && fullText != null) {
+             m = TelegramParsingRegex.timeRegex.find(fullText)
+        }
+
+        if (m == null) return null
+        
         val h = m.groupValues[1].toIntOrNull() ?: return null
         val min = m.groupValues[2].toIntOrNull() ?: return null
         return try {
-            LocalTime.of(
-                h,
-                min
-            )
+            LocalTime.of(h, min)
         } catch (_: Exception) {
             null
         }
     }
 
-    private fun extractSnippetAround(
+    private fun extractSnippet(
         lines: List<String>,
         matchRange: IntRange
-    ): Pair<String, IntRange> {
-        // грубо сопоставляем по индексу символов в full text: это достаточно для наших целей
+    ): String {
         val full = lines.joinToString("\n")
-        val start = (matchRange.first - 120).coerceAtLeast(0)
-        val end = (matchRange.last + 120).coerceAtMost(full.length)
-        return full.substring(
-            start,
-            end
-        ) to (start..end)
+        val start = (matchRange.first - 300).coerceAtLeast(0)
+        val end = (matchRange.last + 300).coerceAtMost(full.length)
+        return full.substring(start, end)
     }
 }

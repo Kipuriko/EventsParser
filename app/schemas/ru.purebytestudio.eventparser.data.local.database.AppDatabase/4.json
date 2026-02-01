@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 3,
-    "identityHash": "6dc8f9abb83ffb08cf71d6a594a484c1",
+    "version": 4,
+    "identityHash": "1a06bf4b624af8b0fbc9cfbd16a626bf",
     "entities": [
       {
         "tableName": "events",

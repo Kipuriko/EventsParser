@@ -59,7 +59,8 @@ data class Event(
     @Serializable(with = LocalDateTimeSerializer::class)
     val registrationDeadline: LocalDateTime? = null,
     val maxParticipants: Int? = null,
-    val hasSpecificTime: Boolean = false
+    val hasSpecificTime: Boolean = false,
+    val localImagePath: String? = null
 )
 
 /**

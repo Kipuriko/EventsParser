@@ -51,6 +51,7 @@ data class EventEntity(
     val registrationDeadline: String? = null,
     val maxParticipants: Int? = null,
     val hasSpecificTime: Boolean = false,
+    val localImagePath: String? = null,
     val createdAt: Long = System.currentTimeMillis()
 ) {
     fun toDomain(): Event =
@@ -76,7 +77,8 @@ data class EventEntity(
             isFavorite = isFavorite,
             registrationDeadline = registrationDeadline?.let { LocalDateTime.parse(it) },
             maxParticipants = maxParticipants,
-            hasSpecificTime = hasSpecificTime
+            hasSpecificTime = hasSpecificTime,
+            localImagePath = localImagePath
         )
 
     companion object {
@@ -102,7 +104,8 @@ data class EventEntity(
             isFavorite = event.isFavorite,
             registrationDeadline = event.registrationDeadline?.toString(),
             maxParticipants = event.maxParticipants,
-            hasSpecificTime = event.hasSpecificTime
+            hasSpecificTime = event.hasSpecificTime,
+            localImagePath = event.localImagePath
         )
     }
 }

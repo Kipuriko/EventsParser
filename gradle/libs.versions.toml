@@ -1,10 +1,10 @@
 [versions]
-agp = "8.13.2"
+agp = "9.0.0"
 kotlin = "2.3.0"
 coreKtx = "1.17.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.2"
-composeBom = "2025.12.01"
+activityCompose = "1.12.3"
+composeBom = "2026.01.01"
 
 # DI
 koin = "4.1.1"
@@ -15,7 +15,7 @@ orbit = "11.0.0"
 # Network
 retrofit = "3.0.0"
 okhttp = "5.3.2"
-kotlinxSerialization = "1.9.0"
+kotlinxSerialization = "1.10.0"
 
 # HTML Parsing
 jsoup = "1.22.1"
@@ -42,15 +42,15 @@ splashScreen = "1.2.0"
 timber = "5.0.1"
 
 # Work Manager
-workManager = "2.11.0"
+workManager = "2.11.1"
 
 # Testing
 junit = "4.13.2"
 
 # KSP
-ksp = "2.2.21-2.0.4"
-ui = "1.10.0"
-foundation = "1.10.0"
+ksp = "2.3.2"
+ui = "1.10.2"
+foundation = "1.10.2"
 
 [libraries]
 # Core

@@ -10,7 +10,7 @@ internal object TelegramParsingRegex {
     private const val MONTHS_REGEX =
         "января|февраля|марта|апреля|мая|июня|июля|августа|сентября|октября|ноября|декабря|январь|февраль|март|апрель|май|июнь|июль|август|сентябрь|октябрь|ноябрь|декабрь"
 
-    val timeRegex: Regex = Regex("""\b(\d{1,2})[:.](\d{2})\b""")
+    val timeRegex: Regex = Regex("""\b([0-2]?\d):([0-5]\d)\b""")
 
     val numericDateRegex: Regex = Regex("""\b(\d{1,2})\.(\d{1,2})\.(\d{2,4})\b""")
 

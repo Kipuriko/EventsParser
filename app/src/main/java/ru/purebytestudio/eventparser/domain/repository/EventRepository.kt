@@ -67,4 +67,9 @@ interface EventRepository {
      * @return количество удаленных дубликатов
      */
     suspend fun cleanupDuplicates(): Int
+
+    /**
+     * Перепарсить даты всех событий локально (используется для миграций)
+     */
+    suspend fun reparseEvents()
 }

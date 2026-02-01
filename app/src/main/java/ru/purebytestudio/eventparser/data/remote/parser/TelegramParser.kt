@@ -34,7 +34,8 @@ internal class TelegramParser(
         private const val TIMEOUT_MS = 15000
         private const val TELEGRAM_URL_FORMAT = "https://t.me/s/%s"
         private const val MESSAGE_SELECTOR = ".tgme_widget_message"
-        private const val PARSE_LIMIT = 30  // Увеличено с 10 до 30 для большего охвата событий
+        private const val PARSE_LIMIT = 30
+        private const val IMAGE_SCORE_BONUS = 1000
     }
 
     override suspend fun parseEvents(categories: List<EventCategory>): Result<List<Event>> =
@@ -83,7 +84,7 @@ internal class TelegramParser(
     }
 
     private fun dedupScore(event: Event): Int =
-        (if (event.imageUrl != null) 1000 else 0) + event.description.length
+        (if (event.imageUrl != null) IMAGE_SCORE_BONUS else 0) + event.description.length
 
     private fun parseChannel(channel: TelegramChannel): List<Event> {
         val url = String.format(

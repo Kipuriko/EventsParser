@@ -83,7 +83,7 @@ snackbar).
 
 ### Room (SQLite)
 
-- **БД**: `data.local.database.AppDatabase` (версия 3), таблица `events` (
+- **БД**: `data.local.database.AppDatabase` (версия 4), таблица `events` (
   `data.local.entity.EventEntity`).
 - **DAO**: `data.local.dao.EventDao` возвращает `Flow<List<EventEntity>>` для реактивного UI.
 - **Индексы**: по `category`, `source`, `eventType`, `isFavorite`, `dateTime`, `isFree`, а также по
