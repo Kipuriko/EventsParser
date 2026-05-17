@@ -1,0 +1,2311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MASS PROTOCOL — План питания v4.0</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;700&family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600;9..144,900&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0a0a08;--bg-2:#14140f;--bg-3:#1a1c0a;
+  --ink:#f4f0e6;--muted:#8a8576;
+  --acid:#d6ff3d;--rust:#ff5c2a;--cream:#ebe3cf;
+  --line:#2a2820;--green:#6fbf60;--blue:#5fb3d9;--gold:#e5b13d;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'Fraunces',serif;font-weight:400;line-height:1.5;
+  overflow-x:hidden;
+  background-image:
+    radial-gradient(ellipse at top left,rgba(214,255,61,.04),transparent 50%),
+    radial-gradient(ellipse at bottom right,rgba(255,92,42,.05),transparent 50%);
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.4;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.95 0 0 0 0 0.94 0 0 0 0 0.9 0 0 0 0.08 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 28px;
+  background:rgba(10,10,8,.88);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.14em;text-transform:uppercase;
+}
+.topbar .dot{color:var(--acid)}
+.topbar .right{color:var(--muted);display:flex;gap:16px;flex-wrap:wrap;justify-content:flex-end}
+.topbar a{color:inherit;text-decoration:none;transition:color .2s}
+.topbar a:hover{color:var(--acid)}
+
+/* ── HERO ── */
+.hero{position:relative;padding:52px 28px 44px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:36px;max-width:1400px;margin:0 auto;align-items:center}
+.badge-pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--bg);background:var(--acid);padding:5px 11px;margin-bottom:20px}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,7.5vw,110px);line-height:.92;color:var(--cream)}
+.hero h1 .acid{color:var(--acid)}
+.hero h1 .rust{color:var(--rust);font-style:italic;font-family:'Fraunces',serif;font-weight:900;font-size:.78em}
+.hero-sub{margin-top:20px;font-size:17px;color:var(--muted);max-width:480px;line-height:1.4}
+.hero-right{border-left:1px solid var(--line);padding-left:28px}
+.stat-block{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.stat{padding:14px 0;border-top:1px solid var(--line)}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:1;color:var(--ink)}
+.stat-value span{font-size:13px;color:var(--muted);margin-left:4px;font-family:'JetBrains Mono',monospace}
+
+/* ── SECTIONS ── */
+section{position:relative;z-index:2}
+.sec-head{padding:56px 28px 24px;max-width:1400px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;align-items:end;gap:28px}
+.sec-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--acid);letter-spacing:.2em}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(28px,4vw,52px);line-height:.95;color:var(--cream)}
+.sec-title em{color:var(--rust);font-family:'Fraunces',serif;font-style:italic;font-weight:900}
+.sec-wrap{padding:0 28px 72px;max-width:1400px;margin:0 auto}
+
+/* ── MACROS ── */
+.macros{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.macro{padding:28px 20px;border-right:1px solid var(--line);transition:background .25s}
+.macro:last-child{border-right:none}
+.macro:hover{background:var(--bg-2)}
+.macro-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.macro-value{font-family:'Bebas Neue',sans-serif;font-size:80px;line-height:.9;color:var(--cream)}
+.macro-value .unit{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);margin-left:5px}
+.macro-bar{height:3px;background:var(--line);margin-top:14px;overflow:hidden}
+.macro-bar::after{content:'';display:block;height:100%;background:var(--acid);animation:fillBar 1.4s cubic-bezier(.7,0,.2,1) forwards}
+.macro:nth-child(1) .macro-bar::after{width:100%}
+.macro:nth-child(2) .macro-bar::after{width:48%;background:var(--rust)}
+.macro:nth-child(3) .macro-bar::after{width:30%;background:var(--cream)}
+.macro:nth-child(4) .macro-bar::after{width:72%;background:var(--acid)}
+@keyframes fillBar{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+.macro-note{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:10px}
+
+/* ── INTRO TEXT ── */
+.intro-text{max-width:760px;font-size:18px;color:var(--ink);margin-bottom:36px;line-height:1.55}
+.intro-text strong{color:var(--acid)}
+.body-text{font-size:15px;color:var(--ink);line-height:1.55;margin-bottom:14px}
+.body-text strong{color:var(--acid)}
+
+/* ── INFO BOX ── */
+.info-box{padding:20px 24px;background:var(--bg-2);border-left:3px solid var(--acid);margin-bottom:20px}
+.info-box.rust{border-color:var(--rust)}
+.info-box.green{border-color:var(--green)}
+.info-box h4{font-family:'Fraunces',serif;font-weight:900;font-style:italic;font-size:20px;color:var(--cream);margin-bottom:8px}
+.info-box p{font-size:14px;line-height:1.55;color:var(--ink)}
+.info-box p strong{color:var(--acid)}
+
+/* ── VARIANTS ── */
+.variants{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line)}
+.variant{padding:28px 20px;border-right:1px solid var(--line);background:var(--bg-2)}
+.variant:last-child{border-right:none}
+.variant.featured{background:var(--acid);color:var(--bg)}
+.variant.featured .v-tag{background:var(--bg);color:var(--acid)}
+.variant.featured .v-detail{border-color:rgba(10,10,8,.2)}
+.variant.featured .v-meta{color:rgba(10,10,8,.7)}
+.v-tag{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.2em;background:var(--bg);color:var(--muted);padding:3px 9px;margin-bottom:14px}
+.v-title{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;margin-bottom:6px}
+.v-meta{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:20px}
+.v-detail{padding:10px 0;border-top:1px solid var(--line);font-size:13px;line-height:1.4}
+.v-detail strong{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;display:block;opacity:.7;margin-bottom:2px}
+
+/* ── WEEK ── */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.day{background:var(--bg);padding:18px 14px;transition:background .2s}
+.day:hover{background:var(--bg-2)}
+.day-head{display:flex;justify-content:space-between;align-items:baseline;padding-bottom:10px;border-bottom:1px dashed var(--line);margin-bottom:14px}
+.day-num{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;color:var(--cream)}
+.day-name{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;color:var(--acid);text-transform:uppercase}
+.meal{margin-bottom:12px;font-size:12px;line-height:1.4}
+.meal-type{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:3px}
+.meal-desc{color:var(--ink)}
+.day-totals{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.day-totals .kcal{color:var(--acid);font-size:13px;margin-bottom:3px}
+
+/* ── RECIPES ── */
+.recipe-day{border:1px solid var(--line);margin-bottom:10px;background:var(--bg-2);overflow:hidden}
+.recipe-day summary{cursor:pointer;padding:18px 24px;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px;list-style:none;transition:background .2s}
+.recipe-day summary::-webkit-details-marker{display:none}
+.recipe-day summary:hover{background:rgba(214,255,61,.04)}
+.recipe-day[open] summary{border-bottom:1px solid var(--line);background:rgba(214,255,61,.06)}
+.rday-num{font-family:'Bebas Neue',sans-serif;font-size:44px;line-height:.9;color:var(--acid)}
+.rday-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--cream)}
+.rday-title .sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.14em;margin-top:3px}
+.rday-arrow{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);transition:transform .3s}
+.recipe-day[open] .rday-arrow{transform:rotate(45deg);color:var(--acid)}
+.recipe{padding:22px 24px;border-bottom:1px dashed var(--line);display:grid;grid-template-columns:230px 1fr;gap:28px}
+.recipe:last-child{border-bottom:none}
+.meal-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;background:var(--rust);color:var(--bg);padding:3px 9px;margin-bottom:10px}
+.recipe-name{font-family:'Fraunces',serif;font-weight:900;font-style:italic;font-size:22px;color:var(--cream);line-height:1.1;margin-bottom:10px}
+.recipe-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;margin-bottom:14px}
+.recipe-time span{color:var(--acid)}
+.ing-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink);margin-bottom:7px;display:block}
+.ing-item{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);line-height:1.7}
+.step-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;display:block}
+.step{display:grid;grid-template-columns:28px 1fr;gap:14px;padding:8px 0;border-top:1px solid var(--line);font-size:14px;line-height:1.5;color:var(--ink)}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:20px;line-height:1;color:var(--acid)}
+.tip-box{margin-top:14px;padding:10px 13px;background:var(--bg-3);border-left:2px solid var(--acid);font-size:12px;color:var(--cream);line-height:1.4}
+.tip-box strong{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--acid);display:block;margin-bottom:3px}
+
+/* ── TRACKER ── */
+.tracker-wrap{background:var(--bg-2);border:1px solid var(--line);padding:28px}
+.tracker-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--cream);margin-bottom:6px}
+.tracker-sub{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.14em;margin-bottom:24px}
+.tracker-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.t-item{padding:14px 12px;background:var(--bg);border:1px solid var(--line);cursor:pointer;transition:all .2s;user-select:none}
+.t-item:hover{border-color:var(--acid)}
+.t-item.done{background:var(--acid);border-color:var(--acid)}
+.t-item.done .t-label{color:var(--bg)}
+.t-item.done .t-icon{color:var(--bg)}
+.t-item.done .t-check{color:var(--bg)}
+.t-icon{font-size:22px;display:block;margin-bottom:8px}
+.t-label{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px;display:block}
+.t-check{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--line)}
+.tracker-bar-wrap{margin-bottom:16px}
+.tracker-bar-bg{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.tracker-bar-fill{height:100%;background:var(--acid);transition:width .4s cubic-bezier(.4,0,.2,1);border-radius:3px}
+.tracker-pct{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--acid);margin-top:4px}
+.tracker-msg{font-size:14px;color:var(--muted);margin-top:6px;font-style:italic;min-height:20px}
+.tracker-reset{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid var(--line);padding:6px 14px;cursor:pointer;transition:all .2s;margin-top:12px}
+.tracker-reset:hover{border-color:var(--rust);color:var(--rust)}
+
+/* ── BATCH COOKING ── */
+.batch-grid{display:grid;grid-template-columns:auto 1fr;gap:0;border:1px solid var(--line)}
+.batch-row{display:contents}
+.batch-time{padding:20px 20px;background:var(--bg-2);border-bottom:1px solid var(--line);border-right:1px solid var(--line);font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--acid);white-space:nowrap;align-items:center;display:flex}
+.batch-content{padding:20px 24px;background:var(--bg);border-bottom:1px solid var(--line)}
+.batch-content h5{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:6px}
+.batch-content p{font-size:13px;color:var(--muted);line-height:1.5}
+.batch-total{grid-column:1/-1;padding:18px 24px;background:rgba(214,255,61,.08);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);letter-spacing:.08em}
+
+/* ── ENERGY ── */
+.energy-timeline{display:grid;grid-template-columns:110px 1fr;gap:0;border-left:2px solid var(--line);margin-left:10px}
+.e-time{padding:14px 16px 14px 0;text-align:right;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid);position:relative;line-height:1.15;display:flex;align-items:center;justify-content:flex-end}
+.e-time::after{content:'';position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:11px;height:11px;border-radius:50%;background:var(--acid);border:3px solid var(--bg)}
+.e-time.warn::after{background:var(--rust)}
+.e-content{padding:12px 20px;border-bottom:1px dashed var(--line);display:flex;flex-direction:column;justify-content:center}
+.e-content:last-child{border-bottom:none}
+.e-content h5{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.e-action{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--cream);margin-bottom:4px;line-height:1.2}
+.e-detail{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:8px}
+.e-pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-family:'JetBrains Mono',monospace;font-size:9px;padding:3px 8px;border-radius:2px;letter-spacing:.08em}
+.pill.good{background:rgba(111,191,96,.15);color:var(--green);border:1px solid rgba(111,191,96,.3)}
+.pill.bad{background:rgba(255,92,42,.1);color:var(--rust);border:1px solid rgba(255,92,42,.25)}
+
+/* ── SEASONAL ── */
+.seasons{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+.season{padding:22px 18px;border-right:1px solid var(--line);background:var(--bg-2)}
+.season:last-child{border-right:none}
+.season-icon{font-size:28px;margin-bottom:10px;display:block}
+.season-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--cream);margin-bottom:12px}
+.season-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px;margin-top:10px;display:block}
+.season-label.cheap{color:var(--green)}
+.season-label.exp{color:var(--rust)}
+.season-item{font-size:12px;color:var(--muted);line-height:1.7}
+.season-tip{margin-top:12px;padding:8px 10px;background:rgba(214,255,61,.06);border-left:2px solid var(--acid);font-size:11px;color:var(--cream);line-height:1.4}
+
+/* ── SUPPLEMENTS ── */
+.supps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+.supp{padding:20px 16px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg-2)}
+.supp:nth-child(4n){border-right:none}
+.supp:nth-last-child(-n+4){border-bottom:none}
+.supp:hover{background:var(--bg)}
+.supp-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;padding:3px 8px;margin-bottom:10px}
+.supp-badge.green{background:rgba(111,191,96,.18);color:var(--green)}
+.supp-badge.yellow{background:rgba(229,177,61,.15);color:var(--gold)}
+.supp-badge.gray{background:rgba(138,133,118,.15);color:var(--muted)}
+.supp-badge.red{background:rgba(255,92,42,.12);color:var(--rust)}
+.supp-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--cream);margin-bottom:4px}
+.supp-dose{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.08em;margin-bottom:3px}
+.supp-price{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:10px}
+.supp-why{font-size:12px;color:var(--muted);line-height:1.45;margin-bottom:8px}
+.supp-where{font-size:11px;color:var(--ink);line-height:1.4;border-top:1px solid var(--line);padding-top:8px;margin-top:8px}
+
+/* ── PROGRESS ── */
+.progress-months{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line)}
+.prog-month{padding:22px 18px;border-right:1px solid var(--line);background:var(--bg-2)}
+.prog-month:last-child{border-right:none}
+.prog-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid);margin-bottom:4px}
+.prog-weight{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);margin-bottom:4px}
+.prog-focus{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--cream);line-height:1;margin-bottom:14px}
+.prog-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;margin-top:12px;display:block}
+.prog-item{font-size:12px;color:var(--ink);line-height:1.7}
+.prog-item::before{content:'·  ';color:var(--acid)}
+.prog-milestone{margin-top:12px;padding:8px 10px;background:rgba(214,255,61,.07);border-left:2px solid var(--acid);font-size:11px;color:var(--cream);line-height:1.4;font-style:italic}
+
+/* ── SHOPS ── */
+.shops-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:36px}
+.shop{padding:22px;background:var(--bg-2);border:1px solid var(--line)}
+.shop.featured{border-color:var(--acid);background:linear-gradient(135deg,rgba(214,255,61,.05),var(--bg-2))}
+.shop-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px dashed var(--line)}
+.shop-name{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--cream);line-height:1}
+.shop-name .star{color:var(--acid);font-size:16px;margin-left:5px}
+.shop-rank{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-align:right}
+.shop-rank .rank{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--acid);display:block;line-height:1}
+.shop-badge{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--acid);color:var(--bg);padding:3px 8px;margin-bottom:10px}
+.shop-addr{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:12px;line-height:1.6}
+.shop-addr strong{color:var(--ink);display:block;margin-bottom:2px}
+.shop-pros{font-size:13px;line-height:1.5;color:var(--ink);margin-bottom:10px}
+.shop-pros strong{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--green);margin-bottom:4px}
+.shop-cons{font-size:12px;line-height:1.4;color:var(--muted)}
+.shop-cons strong{display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--rust);margin-bottom:4px}
+.strategy-box{padding:18px 22px;background:rgba(214,255,61,.06);border-left:3px solid var(--acid);font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.7;color:var(--ink);margin-bottom:36px}
+.strategy-box .s-label{color:var(--acid);font-size:10px;letter-spacing:.18em;text-transform:uppercase;display:block;margin-bottom:8px}
+
+/* ── BRANDS ── */
+.brands{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid var(--line)}
+.brand{padding:18px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.brand:nth-child(2n){border-right:none}
+.brand-cat{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--acid);margin-bottom:8px}
+.brand-item{font-size:13px;color:var(--ink);line-height:1.7}
+.brand-item b{color:var(--cream);font-family:'Fraunces',serif;font-weight:700}
+.brand-note{font-size:11px;color:var(--muted);margin-top:8px;line-height:1.5;font-style:italic}
+
+/* ── ADVICE ── */
+.advice-grid{display:grid;grid-template-columns:1.2fr 1fr;border:1px solid var(--line)}
+.advice-main{padding:36px;border-right:1px solid var(--line);background:var(--bg-2)}
+.advice-side{padding:36px;background:var(--rust);color:var(--bg)}
+.advice-main h3{font-family:'Fraunces',serif;font-weight:900;font-style:italic;font-size:28px;margin-bottom:18px;color:var(--cream);line-height:1.1}
+.advice-main p{font-size:16px;line-height:1.55;margin-bottom:16px;color:var(--ink)}
+.advice-main p strong{color:var(--acid)}
+.advice-side h3{font-family:'Bebas Neue',sans-serif;font-size:38px;line-height:.95;margin-bottom:20px}
+.mistake{padding:14px 0;border-top:1px solid rgba(10,10,8,.25);display:grid;grid-template-columns:28px 1fr;gap:10px}
+.mistake-num{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1}
+.mistake-text{font-size:14px;line-height:1.4}
+.mistake-text strong{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+
+/* ── VEGGIES ── */
+.veggies-grid{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line)}
+.veggie{padding:20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--bg);transition:background .2s}
+.veggie:hover{background:var(--bg-2)}
+.veggie:nth-child(4n){border-right:none}
+.veggie:nth-last-child(-n+4){border-bottom:none}
+.veggie-icon{font-size:28px;margin-bottom:10px;display:block}
+.veggie-name{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--cream);margin-bottom:3px}
+.veggie-kcal{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--green);letter-spacing:.1em;margin-bottom:8px}
+.veggie-why{font-size:12px;color:var(--muted);line-height:1.4}
+.veggie-why strong{color:var(--ink);display:block;font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:3px}
+
+/* ── BUDGET ── */
+.budget-grid{display:grid;grid-template-columns:1fr 2fr;gap:28px;align-items:start}
+.budget-big{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,11vw,160px);line-height:.85;color:var(--acid)}
+.budget-big small{font-size:.3em;color:var(--muted);display:block;font-family:'JetBrains Mono',monospace;letter-spacing:.14em;margin-bottom:6px}
+.grocery{display:grid;grid-template-columns:repeat(2,1fr);border-top:1px solid var(--line)}
+.grocery-row{display:grid;grid-template-columns:1fr auto;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:start;gap:10px}
+.grocery-row:nth-child(odd){border-right:1px solid var(--line)}
+.grocery-row .price{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid)}
+.grocery-row .where{font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;display:block;margin-top:2px}
+.grocery-total{grid-column:1/-1;display:grid;grid-template-columns:1fr auto;padding:18px 14px;background:var(--bg-2);border-bottom:1px solid var(--line);font-family:'Bebas Neue',sans-serif;font-size:22px}
+.grocery-total .price{color:var(--acid);font-size:26px}
+
+/* ── SCHEDULE ── */
+.timeline{display:grid;grid-template-columns:100px 1fr;gap:0;border-left:2px solid var(--line);margin-left:10px}
+.tl-time{padding:14px 16px 14px 0;text-align:right;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid);position:relative;line-height:1.15;display:flex;align-items:center;justify-content:flex-end}
+.tl-time::after{content:'';position:absolute;right:-7px;top:50%;transform:translateY(-50%);width:11px;height:11px;border-radius:50%;background:var(--acid);border:3px solid var(--bg)}
+.tl-time.work::after{background:var(--rust)}
+.tl-time.sleep::after{background:var(--muted)}
+.tl-content{padding:12px 20px;border-bottom:1px dashed var(--line)}
+.tl-content:last-child{border-bottom:none}
+.tl-content h5{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:4px}
+.tl-what{font-family:'Fraunces',serif;font-size:17px;font-weight:600;color:var(--cream);margin-bottom:3px;line-height:1.2}
+.tl-what.meal{color:var(--acid)}
+.tl-what.work{color:var(--rust)}
+.tl-note{font-size:12px;color:var(--muted);line-height:1.4}
+.weekend-note{margin-top:20px;padding:16px 20px;background:rgba(95,179,217,.08);border-left:3px solid var(--blue);font-size:13px;line-height:1.5;color:var(--ink)}
+.weekend-note strong{color:var(--blue);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;display:block;margin-bottom:5px}
+
+/* ── NO-COOK КОМПЛЕКТЫ ── */
+.nocook-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:28px}
+.nc-item{padding:24px 18px;border-right:1px solid var(--line)}
+.nc-item:last-child{border-right:none}
+.nc-label{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.nc-time{font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:.9;color:var(--acid);margin-bottom:8px}
+.nc-time span{font-size:16px;color:var(--muted);margin-left:4px;font-family:'JetBrains Mono',monospace}
+.nc-title{font-size:15px;font-weight:700;color:var(--cream);margin-bottom:8px;line-height:1.3}
+.nc-kcal{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--green);margin-bottom:12px}
+.nc-body{font-size:12px;color:var(--muted);line-height:1.6}
+.nc-body strong{color:var(--ink);display:block;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;margin:8px 0 4px}
+.nc-body span{display:block}
+.nocook-strategy{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line)}
+.ns-col{padding:22px 24px}
+.ns-col:first-child{border-right:1px solid var(--line);background:var(--bg-2)}
+.ns-title{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--acid);margin-bottom:14px}
+.ns-row{margin-bottom:14px;font-size:14px;line-height:1.5;color:var(--ink)}
+.ns-row strong{color:var(--acid)}
+.ns-list{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1.85;color:var(--muted)}
+.ns-list span::before{content:'● ';color:var(--acid)}
+
+/* ── WORKOUT ── */
+.workout-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:20px}
+.wd{background:var(--bg-2);padding:22px 18px}
+.wd-tag{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--acid);margin-bottom:10px}
+.wd-sched{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:14px}
+.wd-ex{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:2;color:var(--ink)}
+.wd-ex .sets{color:var(--acid);float:right;font-size:10px}
+.wd-note{font-size:12px;color:var(--rust);margin-top:14px;line-height:1.4;font-style:italic}
+
+/* ── FOOTER ── */
+footer{padding:56px 28px 36px;border-top:1px solid var(--line);background:var(--bg-2);text-align:center}
+footer .big{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,9vw,130px);line-height:.9;color:var(--cream);margin-bottom:14px}
+footer .big em{color:var(--acid);font-style:italic;font-family:'Fraunces',serif;font-weight:900}
+footer .small{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){
+  .week{grid-template-columns:repeat(4,1fr)}
+  .macros{grid-template-columns:repeat(2,1fr)}
+  .macro:nth-child(2){border-right:none}
+  .macro{border-bottom:1px solid var(--line)}
+  .variants{grid-template-columns:1fr}
+  .variant{border-right:none;border-bottom:1px solid var(--line)}
+  .hero-grid{grid-template-columns:1fr}
+  .hero-right{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:20px}
+  .advice-grid{grid-template-columns:1fr}
+  .advice-main{border-right:none;border-bottom:1px solid var(--line)}
+  .budget-grid{grid-template-columns:1fr}
+  .recipe{grid-template-columns:1fr;gap:16px}
+  .veggies-grid{grid-template-columns:repeat(2,1fr)}
+  .veggie:nth-child(4n){border-right:1px solid var(--line)}
+  .veggie:nth-child(2n){border-right:none}
+  .veggies-grid .veggie:nth-last-child(-n+4){border-bottom:1px solid var(--line)}
+  .veggies-grid .veggie:nth-last-child(-n+2){border-bottom:none}
+  .seasons{grid-template-columns:repeat(2,1fr)}
+  .season:nth-child(2n){border-right:none}
+  .season:nth-child(2n+1):nth-last-child(-n+2),.season:nth-child(2n+1):nth-last-child(-n+2)~.season{border-bottom:none}
+  .supps{grid-template-columns:repeat(2,1fr)}
+  .supp:nth-child(4n){border-right:1px solid var(--line)}
+  .supp:nth-child(2n){border-right:none}
+  .progress-months{grid-template-columns:repeat(2,1fr)}
+  .prog-month:nth-child(2n){border-right:none}
+  .shops-grid{grid-template-columns:1fr}
+  .nocook-grid{grid-template-columns:1fr}
+  .nc-item{border-right:none;border-bottom:1px solid var(--line)}
+  .nocook-strategy{grid-template-columns:1fr}
+  .ns-col:first-child{border-right:none;border-bottom:1px solid var(--line)}
+  .workout-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .week{grid-template-columns:repeat(2,1fr)}
+  .grocery{grid-template-columns:1fr}
+  .grocery-row:nth-child(odd){border-right:none}
+  .sec-head{grid-template-columns:1fr}
+  .stat-block{grid-template-columns:1fr}
+  .hero{padding:36px 18px}
+  .topbar{padding:12px 18px;font-size:8px}
+  .topbar .right{gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .advice-main,.advice-side{padding:24px 18px}
+  .recipe-day summary{padding:14px 16px;gap:12px}
+  .recipe{padding:16px}
+  .rday-num{font-size:36px}
+  .rday-title{font-size:17px}
+  .veggies-grid{grid-template-columns:1fr}
+  .veggie{border-right:none!important}
+  .brands{grid-template-columns:1fr}
+  .brand{border-right:none!important}
+  .tracker-grid{grid-template-columns:repeat(3,1fr)}
+  .supps{grid-template-columns:1fr}
+  .supp{border-right:none!important}
+  .progress-months{grid-template-columns:1fr}
+  .prog-month{border-right:none!important}
+  .seasons{grid-template-columns:1fr}
+  .season{border-right:none!important}
+  .energy-timeline{grid-template-columns:70px 1fr;margin-left:6px}
+}
+.fade-up{opacity:0;transform:translateY(18px);animation:fadeUp .8s cubic-bezier(.2,.6,.2,1) forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.d1{animation-delay:.1s}.d2{animation-delay:.22s}
+</style>
+
+
+<style id="print-css">
+@media print {
+  /* Скрыть интерактивное и навигацию */
+  .topbar,
+  #tracker, #weight-tracker, #shopping,
+  .tracker-wrap, .rday-arrow,
+  button, input, select, canvas,
+  #wt-no-data, #wt-log-wrap, #wt-stats,
+  .cat-btn, #sh-search, #sh-shop, #sh-summary,
+  footer .small,
+  body::before { display: none !important; }
+
+  /* Белый фон, чёрный текст */
+  :root {
+    --bg:    #ffffff;
+    --bg-2:  #f5f5f5;
+    --bg-3:  #eeeeee;
+    --ink:   #111111;
+    --muted: #555555;
+    --acid:  #2a6000;
+    --rust:  #c03000;
+    --cream: #111111;
+    --line:  #cccccc;
+    --green: #1a6000;
+    --blue:  #004488;
+    --gold:  #7a5500;
+  }
+
+  body {
+    font-size: 11pt;
+    line-height: 1.5;
+    background: white;
+    color: black;
+  }
+
+  /* Обрезка длинных блоков */
+  .recipe-day:not([open]) { display: none; }
+  .recipe-day[open] summary .rday-arrow { display: none; }
+
+  /* Каждая секция с новой страницы где нужно */
+  #week, #recipes { page-break-before: always; }
+  #shopping { page-break-before: always; }
+  #budget { page-break-before: always; }
+
+  /* Не разрывать рецепт пополам */
+  .recipe { page-break-inside: avoid; }
+  .prog-month { page-break-inside: avoid; }
+  .supp { page-break-inside: avoid; }
+
+  /* Убрать анимации */
+  * { animation: none !important; transition: none !important; }
+
+  /* Печатать URL ссылок не нужно */
+  a[href]::after { content: none !important; }
+
+  /* Сетка недели — 4 колонки на печати */
+  .week { grid-template-columns: repeat(4, 1fr) !important; }
+
+  /* Убрать тени и фильтры */
+  .macro-bar::after { animation: none; width: 0 !important; }
+
+  /* Шапка при печати */
+  @page {
+    margin: 15mm 12mm;
+    size: A4;
+  }
+  @page :first { margin-top: 10mm; }
+
+  /* Печатный заголовок секций */
+  .sec-title { font-size: 24pt; }
+  .sec-num { font-size: 8pt; }
+
+  /* Чек-лист покупок: показать список в печатном виде */
+  #sh-list { display: block !important; }
+  #sh-list .sh-item.bought { opacity: 0.4; }
+  #sh-list .sh-item { border: none; border-bottom: 1px solid #ddd; }
+  .sh-cat-sep { font-weight: bold; padding: 8px 0 4px; }
+  .sh-check { display: none; }
+  .sh-item::before { content: "☐ "; font-size: 14pt; }
+  .sh-item.bought::before { content: "☑ "; }
+
+  /* Footer при печати */
+  footer .big { font-size: 28pt; }
+}
+</style>
+
+</head>
+<body>
+<div class="topbar">
+  <div><span class="dot">●</span>&nbsp;&nbsp;MASS / ROSTOV / 27Y / 64KG</div>
+  <div class="right"><a href="#norms">NORMS</a><a href="#schedule">DAY</a><a href="#variants">VARIANTS</a><a href="#week">WEEK</a><a href="#recipes">RECIPES</a><a href="#nocook">NO-COOK</a><a href="#workout">WORKOUT</a><a href="#tracker">TRACKER</a><a href="#batch">BATCH</a><a href="#energy">ENERGY</a><a href="#seasonal">СЕЗОН</a><a href="#supplements">ДОБАВКИ</a><a href="#progress">ПРОГРЕСС</a><a href="#veggies">FRUITS</a><a href="#shops">SHOPS</a><a href="#budget">BUDGET</a><a href="#shopping">СПИСОК</a><a href="#weight-tracker">ПРОГРЕСС</a></div>
+</div>
+<section class="hero">
+<div class="hero-grid">
+  <div class="hero-left fade-up d1">
+    <div class="badge-pill">MASS PROTOCOL · ROSTOV · v4.0</div>
+    <h1><span class="acid">МАССА</span> И ЭНЕРГИЯ<br><span class="rust">в плюс.</span></h1>
+    <p class="hero-sub">Персональный план для мужчины 27 лет, 180 см, 64 кг. Работа 9–18 пн-пт, тренировки дома с гантелей. Рецепты, трекер, протокол энергии, добавки, сезонные замены, прогресс по месяцам.</p>
+  </div>
+  <div class="hero-right fade-up d2">
+    <div class="stat-block">
+      <div class="stat"><div class="stat-label">ИМТ текущий</div><div class="stat-value">19.8</div></div>
+      <div class="stat"><div class="stat-label">Цель</div><div class="stat-value">+10<span>кг</span></div></div>
+      <div class="stat"><div class="stat-label">Темп</div><div class="stat-value">+400<span>г/нед</span></div></div>
+      <div class="stat"><div class="stat-label">Тренировки</div><div class="stat-value">3×<span>нед</span></div></div>
+    </div>
+  </div>
+</div>
+</section>
+<section id="norms">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">01 / NORMS</div>
+  <div class="sec-title">Сколько есть <em>каждый день</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Базовый метаболизм ≈ 1580 ккал. С тренировками 3×/нед поддержка ≈ <strong>2200 ккал</strong>. Целевой профицит — <strong>+300–400 ккал = 2500 ккал/день</strong>.</p>
+  <div class="macros"><div class="macro">
+  <div class="macro-label">Калории</div>
+  <div class="macro-value">2500<span class="unit">ккал</span></div>
+  <div class="macro-bar"></div>
+  <div class="macro-note">+450 к поддержке</div>
+</div><div class="macro">
+  <div class="macro-label">Белок</div>
+  <div class="macro-value">120<span class="unit">г белка</span></div>
+  <div class="macro-bar"></div>
+  <div class="macro-note">1.8 г/кг · тренировки</div>
+</div><div class="macro">
+  <div class="macro-label">Жиры</div>
+  <div class="macro-value">75<span class="unit">г жиров</span></div>
+  <div class="macro-bar"></div>
+  <div class="macro-note">~27% калорий</div>
+</div><div class="macro">
+  <div class="macro-label">Углеводы</div>
+  <div class="macro-value">345<span class="unit">г углеводов</span></div>
+  <div class="macro-bar"></div>
+  <div class="macro-note">источник энергии</div>
+</div></div>
+  <div class="info-box" style="margin-top:16px">
+  <h4>Почему не 2 г/кг?</h4>
+  <p>Ты тренируешься дома 3 раза в неделю — это уже нагрузка. Оптимум: <strong>1.8 г/кг = 120 г/день.</strong> 2 г/кг нужно при зале 4–5 раз в неделю с тяжёлыми базовыми упражнениями. Избыток белка просто сгорит как калории — смысла платить за него дороже нет.</p>
+</div><div class="info-box" style="margin-top:16px">
+  <h4>Гантеля 2.5 кг — это старт, не потолок</h4>
+  <p>На первые 4–6 недель хватит. Потом мышцы адаптируются и рост остановится. Прогрессия: увеличивай повторения до 20–25, затем докупи 5–8 кг на Авито (~500–1000 ₽). Без прогрессии нагрузки мышцы не растут — это закон физиологии.</p>
+</div><div class="info-box" style="margin-top:16px">
+  <h4>Главная проблема — 1 приём пищи в день</h4>
+  <p>При одном приёме организм большую часть суток голодает. Тестостерон падает, кортизол растёт, синтез белка в мышцах не происходит — просто нет аминокислот в крови. <strong>Минимум 3 приёма</strong>, даже если 2 из них без готовки: творог с орехами + кефир с хлебом.</p>
+</div>
+</div>
+</section>
+<section id="schedule">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">02 / DAY</div>
+  <div class="sec-title">Режим <em>буднего дня</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Под работу 9:00–18:00 пн-пт с плавающим часом обеда. <strong>Главное — 3 приёма пищи и стабильные интервалы 3–4 часа.</strong></p>
+  <div class="timeline"><div class="tl-time">07:00</div>
+<div class="tl-content">
+  <h5>Стакан воды + 5 минут потянуться</h5>
+  <div class="tl-what">Подъём</div>
+  <div class="tl-note">Включает обмен веществ. Пока умываешься — закипает чайник.</div>
+</div><div class="tl-time class="meal"">07:30</div>
+<div class="tl-content">
+  <h5>~650 ккал · полноценный приём</h5>
+  <div class="tl-what class="meal"">Завтрак</div>
+  <div class="tl-note">15 минут. Кофе — после еды, не натощак. Без завтрака к обеду гарантированный «провал».</div>
+</div><div class="tl-time class="work"">09:00</div>
+<div class="tl-content">
+  <h5>Бутылка воды 500 мл на стол</h5>
+  <div class="tl-what class="work"">Начало работы</div>
+  <div class="tl-note">Пей по 200 мл каждый час. Поставь бутылку перед монитором — пить будешь автоматически.</div>
+</div><div class="tl-time">11:00</div>
+<div class="tl-content">
+  <h5>Банан или орехи (~150 ккал)</h5>
+  <div class="tl-what">Мини-перекус (опц.)</div>
+  <div class="tl-note">Если завтрак был лёгким или есть голод — страховочный приём.</div>
+</div><div class="tl-time class="meal"">13:00</div>
+<div class="tl-content">
+  <h5>~800 ккал · самый большой приём</h5>
+  <div class="tl-what class="meal"">Обед · плавающий час</div>
+  <div class="tl-note">Контейнер из дома = экономия ~1500 ₽/нед vs кафе. Гречка + курица собирается за 5 мин вечером.</div>
+</div><div class="tl-time">15:30</div>
+<div class="tl-content">
+  <h5>5 минут ходьбы</h5>
+  <div class="tl-what">Стакан воды + ходьба</div>
+  <div class="tl-note">Поход за водой = микродвижение. 10 000 шагов в день = +200 ккал расход без усилий.</div>
+</div><div class="tl-time class="meal"">17:00</div>
+<div class="tl-content">
+  <h5>~350 ккал · творог/орехи/фрукт</h5>
+  <div class="tl-what class="meal"">Перекус перед тренировкой</div>
+  <div class="tl-note">Ешь за 60–90 мин до тренировки. Углеводы дадут энергию, белок запустит синтез мышц после.</div>
+</div><div class="tl-time class="work"">18:00</div>
+<div class="tl-content">
+  <h5>15–20 мин ходьбы домой</h5>
+  <div class="tl-what class="work"">Конец работы</div>
+  <div class="tl-note">Выйди за остановку до дома. Это ~1500 шагов в день и плавная разгрузка после рабочего дня.</div>
+</div><div class="tl-time class="work"">19:00</div>
+<div class="tl-content">
+  <h5>30–40 мин · День A или B</h5>
+  <div class="tl-what class="work"">Тренировка</div>
+  <div class="tl-note">Пн/пт — верх тела. Ср — низ + пресс. Вт/чт/сб/вс — отдых и восстановление.</div>
+</div><div class="tl-time class="meal"">20:30</div>
+<div class="tl-content">
+  <h5>~700 ккал · белок + крупа + овощи</h5>
+  <div class="tl-what class="meal"">Ужин</div>
+  <div class="tl-note">Не позже 21:00. Тяжёлое и жирное за 3 часа до сна — нарушает сон.</div>
+</div><div class="tl-time">22:30</div>
+<div class="tl-content">
+  <h5>~150 ккал · казеин на ночь</h5>
+  <div class="tl-what">Кефир/творог перед сном</div>
+  <div class="tl-note">Казеин переваривается 6–8 часов. Мышцы получают аминокислоты пока ты спишь.</div>
+</div><div class="tl-time class="sleep"">23:00</div>
+<div class="tl-content">
+  <h5>Критично для роста мышц</h5>
+  <div class="tl-what">Сон · 8 часов обязательно</div>
+  <div class="tl-note">Недосып снижает тестостерон на 10–15%, поднимает кортизол. Сон важнее любой добавки.</div>
+</div></div>
+  <div class="weekend-note">
+    <strong>Выходные (сб-вс)</strong>
+    Сдвигай всё на 1–2 часа позже: завтрак к 10:00, обед к 14:30, ужин к 20:30.
+    Воскресенье — batch cooking на неделю (1 час = 4–5 дней питания без готовки).
+  </div>
+</div>
+</section>
+<section id="variants">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">03 / VARIANTS</div>
+  <div class="sec-title">3 варианта <em>под набор массы</em></div>
+</div>
+<div class="sec-wrap"><div class="variants"><div class="variant">
+  <span class="v-tag">A · MINIMAL</span>
+  <div class="v-title">2 приёма пищи</div>
+  <div class="v-meta">для тех, кто не любит есть утром</div>
+  <div class="v-detail"><strong>13:00 — Обед-комбо</strong>Крупа + мясо + овощи + хлеб. ~1300 ккал.</div><div class="v-detail"><strong>20:00 — Ужин-двойник</strong>Углеводы + белок + молочка на ночь. ~1200 ккал.</div><div class="v-detail"><strong>Плюс</strong>Просто, не отвлекает от работы.</div><div class="v-detail"><strong>Минус</strong>Тяжело съесть 1200 ккал за раз. Плохо для набора.</div>
+</div><div class="variant featured">
+  <span class="v-tag">B · OPTIMAL</span>
+  <div class="v-title">3 приёма + перекус</div>
+  <div class="v-meta">★ рекомендую</div>
+  <div class="v-detail"><strong>07:30 — Завтрак</strong>~650 ккал · углеводы + белок</div><div class="v-detail"><strong>13:30 — Обед</strong>~800 ккал · сытный комплекс</div><div class="v-detail"><strong>17:00 — Перекус</strong>~350 ккал · орехи, молочка, фрукт</div><div class="v-detail"><strong>20:30 — Ужин</strong>~700 ккал · белок + крупа + овощи</div>
+</div><div class="variant">
+  <span class="v-tag">C · NO-COOK</span>
+  <div class="v-title">2 готовых + 1 быстрый</div>
+  <div class="v-meta">если совсем нет времени</div>
+  <div class="v-detail"><strong>07:30 — Творог+мёд+орехи</strong>400 ккал · 1 минута · без готовки</div><div class="v-detail"><strong>13:00 — Контейнер/купить</strong>800 ккал · заготовлено вечером</div><div class="v-detail"><strong>20:00 — Ужин</strong>700 ккал · быстрый рецепт 15 мин</div><div class="v-detail"><strong>Итого</strong>~1900 ккал — меньше нормы, но лучше 1 раза</div>
+</div></div></div>
+</section>
+<section id="week">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">04 / 7 DAYS</div>
+  <div class="sec-title">Меню на <em>неделю</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Меню по варианту B. Без овсянки — 7 разных завтраков. Без лука, тыквы, баклажанов. Готовка 10–40 мин. <strong>Детальные рецепты ниже ↓</strong></p>
+  <div class="week"><div class="day">
+  <div class="day-head"><div class="day-num">01</div><div class="day-name">Пн</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Яичница с сыром + тост, банан</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Куриное филе + рис, салат из огурца</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Творог с мёдом и орехами</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Макароны болоньезе, кефир</div></div>
+  <div class="day-totals"><div class="kcal">2510 ккал</div><div>Б 120·Ж 82·У 348</div></div>
+</div><div class="day">
+  <div class="day-head"><div class="day-num">02</div><div class="day-name">Вт</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Гречневая каша на молоке с орехами</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Рис + куриное бедро, салат</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Йогурт с арахисом, яблоко</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Картофель + тушёный минтай</div></div>
+  <div class="day-totals"><div class="kcal">2490 ккал</div><div>Б 115·Ж 76·У 352</div></div>
+</div><div class="day">
+  <div class="day-head"><div class="day-num">03</div><div class="day-name">Ср</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Сырники со сметаной и мёдом</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Пюре + куриные котлеты, огурец</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Бутерброды с сыром, банан</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Макароны с тунцом, яйцо</div></div>
+  <div class="day-totals"><div class="kcal">2520 ккал</div><div>Б 112·Ж 80·У 358</div></div>
+</div><div class="day">
+  <div class="day-head"><div class="day-num">04</div><div class="day-name">Чт</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Гранола с молоком, банан, аp. паста</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Плов с курицей, огурец</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Творог с бананом и миндалём</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Жареная картошка с яичницей</div></div>
+  <div class="day-totals"><div class="kcal">2530 ккал</div><div>Б 118·Ж 84·У 344</div></div>
+</div><div class="day">
+  <div class="day-head"><div class="day-num">05</div><div class="day-name">Пт</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Горячий сэндвич с яйцом и сыром</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Паста с фаршем и сыром</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Гранола с йогуртом, яблоко</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Картошка с курицей в духовке</div></div>
+  <div class="day-totals"><div class="kcal">2500 ккал</div><div>Б 116·Ж 78·У 350</div></div>
+</div><div class="day">
+  <div class="day-head"><div class="day-num">06</div><div class="day-name">Сб</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Творожные блины с бананом</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Курица терияки с рисом</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Горячий сэндвич с сыром + яйцо</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Гречка + говяжьи котлеты</div></div>
+  <div class="day-totals"><div class="kcal">2510 ккал</div><div>Б 122·Ж 80·У 342</div></div>
+</div><div class="day">
+  <div class="day-head"><div class="day-num">07</div><div class="day-name">Вс</div></div>
+  <div class="meal"><div class="meal-type">Завтрак</div><div class="meal-desc">Пшённая каша на молоке, банан</div></div>
+  <div class="meal"><div class="meal-type">Обед</div><div class="meal-desc">Курица под сыром + макароны</div></div>
+  <div class="meal"><div class="meal-type">Перекус</div><div class="meal-desc">Творог с изюмом и орехами</div></div>
+  <div class="meal"><div class="meal-type">Ужин</div><div class="meal-desc">Запечённая рыба + пюре, кефир</div></div>
+  <div class="day-totals"><div class="kcal">2495 ккал</div><div>Б 114·Ж 76·У 358</div></div>
+</div></div>
+</div>
+</section>
+<section id="recipes">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">05 / RECIPES</div>
+  <div class="sec-title">Пошаговые <em>рецепты</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text" style="color:var(--muted)">Раскрой день, чтобы увидеть пошаговое приготовление. Один человек, одна сковорода/кастрюля.</p>
+  <details class="recipe-day" open>
+  <summary>
+    <div class="rday-num">01</div>
+    <div class="rday-title">Понедельник<span class="sub">4 блюда · ~50 мин готовки за день</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Яичница с сыром и тостом</div>
+    <div class="recipe-time">⏱ <span>10 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Яйца — 3 шт</div><div class="ing-item">· Сыр твёрдый — 40 г</div><div class="ing-item">· Сливочное масло — 15 г</div><div class="ing-item">· Хлеб — 1 ломтик</div><div class="ing-item">· Банан — 1 шт</div><div class="ing-item">· Соль, перец</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Разогрей сковороду с маслом на среднем огне.</div></div><div class="step"><div class="step-num">2</div><div>Разбей яйца аккуратно, посоли и поперчи белок.</div></div><div class="step"><div class="step-num">3</div><div>Через 1 мин посыпь тёртым сыром. Накрой крышкой на 2 мин — желтки жидкие, белок схватится.</div></div><div class="step"><div class="step-num">4</div><div>Хлеб подсуши, намажь маслом. Подавай с бананом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Добавь 1 ст.л. воды в сковороду и сразу накрой — пар готовит белок, не пересушивая желток.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Куриное филе в духовке + рис</div>
+    <div class="recipe-time">⏱ <span>25 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриное филе — 180 г</div><div class="ing-item">· Рис — 100 г</div><div class="ing-item">· Соль, перец, паприка</div><div class="ing-item">· Растит. масло — 1 ч.л.</div><div class="ing-item">· Огурец, морковь — по 1 шт</div><div class="ing-item">· Яйцо варёное — 1 шт</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Разогрей духовку до 200°C. Рис промой до прозрачности, вари 18 мин под крышкой.</div></div><div class="step"><div class="step-num">2</div><div>Куриное филе обсуши, натри специями, смажь маслом.</div></div><div class="step"><div class="step-num">3</div><div>Заверни в фольгу, запеки 20 мин.</div></div><div class="step"><div class="step-num">4</div><div>Яйцо вари 8 мин. Натри морковь на тёрке, нарежь огурец.</div></div><div class="step"><div class="step-num">5</div><div>Нарежь готовое филе поперёк волокон. Подавай с рисом и салатом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Запеки сразу 2 филе — второе возьми в контейнере на работу завтра.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Творожный десерт с мёдом и орехами</div>
+    <div class="recipe-time">⏱ <span>2 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Творог 5% — 200 г</div><div class="ing-item">· Мёд — 1 ст.л.</div><div class="ing-item">· Грецкие орехи — 30 г</div><div class="ing-item">· Изюм — 20 г (опц.)</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Разомни творог вилкой.</div></div><div class="step"><div class="step-num">2</div><div>Полей мёдом, посыпь рублеными орехами.</div></div><div class="step"><div class="step-num">3</div><div>Готово — никакой плиты, 2 минуты.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Это твой идеальный быстрый приём: 400 ккал + 30 г белка без готовки.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Макароны болоньезе</div>
+    <div class="recipe-time">⏱ <span>20 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Макароны — 100 г</div><div class="ing-item">· Говяжий фарш — 150 г</div><div class="ing-item">· Томатная паста — 1 ст.л.</div><div class="ing-item">· Чеснок — 1 зубчик</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Соль, перец, орегано</div><div class="ing-item">· Кефир — 250 мл</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Поставь воду — 1 л, 1 ч.л. соли. Забрось макароны когда закипит.</div></div><div class="step"><div class="step-num">2</div><div>Обжарь фарш на масле 5–7 мин, разбивая лопаткой.</div></div><div class="step"><div class="step-num">3</div><div>Добавь томатную пасту, чеснок, специи. Туши 5 мин.</div></div><div class="step"><div class="step-num">4</div><div>Слей макароны (не промывай!), смешай с соусом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Оставь 2–3 ст.л. воды от макарон — добавь в соус: крахмал делает его шелковистым.</div>
+  </div>
+</div></div>
+</details><details class="recipe-day" >
+  <summary>
+    <div class="rday-num">02</div>
+    <div class="rday-title">Вторник<span class="sub">4 блюда · ~55 мин готовки за день</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Гречневая каша на молоке</div>
+    <div class="recipe-time">⏱ <span>15 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Гречка — 60 г</div><div class="ing-item">· Молоко 2.5% — 300 мл</div><div class="ing-item">· Грецкие орехи — 25 г</div><div class="ing-item">· Мёд — 1 ст.л.</div><div class="ing-item">· Сливочное масло — 10 г</div><div class="ing-item">· Банан — 1 шт</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Гречку промой. Залей 100 мл воды, вари 5 мин.</div></div><div class="step"><div class="step-num">2</div><div>Когда вода выпарится — влей молоко. Убавь огонь.</div></div><div class="step"><div class="step-num">3</div><div>Вари 8–10 мин, помешивая.</div></div><div class="step"><div class="step-num">4</div><div>Добавь масло, накрой на 2 мин.</div></div><div class="step"><div class="step-num">5</div><div>Подавай с бананом, орехами и мёдом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Гречка на молоке — нежная как манка, но богаче белком и клетчаткой.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Рис с куриным бедром</div>
+    <div class="recipe-time">⏱ <span>30 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриное бедро без кости — 180 г</div><div class="ing-item">· Рис — 100 г</div><div class="ing-item">· Соевый соус — 1 ст.л.</div><div class="ing-item">· Соль, перец, паприка</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Огурец, помидор — по 1 шт</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Промой рис до прозрачности. Вари 18 мин под крышкой на минимуме.</div></div><div class="step"><div class="step-num">2</div><div>Бедро натри специями и полей соевым соусом. Оставь на 5 мин.</div></div><div class="step"><div class="step-num">3</div><div>Жарь на сильном огне 4 мин до корочки, переверни — ещё 5 мин на среднем.</div></div><div class="step"><div class="step-num">4</div><div>Нарежь огурец и помидор. Подавай с рисом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Накрой готовое мясо фольгой на 3 мин — соки распределятся, будет сочнее.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Йогурт с арахисом и фруктами</div>
+    <div class="recipe-time">⏱ <span>1 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Йогурт питьевой — 350 мл</div><div class="ing-item">· Арахис жареный — 30 г</div><div class="ing-item">· Яблоко — 1 шт</div><div class="ing-item">· Груша — 1 шт</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Выпей йогурт, заешь арахисом и фруктами.</div></div><div class="step"><div class="step-num">2</div><div>Или налей йогурт в чашку, нарежь фрукты кубиками, посыпь арахисом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Бери йогурт без сахара. Тяжело без сладости — добавь 1 ч.л. мёда.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Картофель с тушёным минтаем</div>
+    <div class="recipe-time">⏱ <span>25 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Минтай филе — 200 г</div><div class="ing-item">· Картофель — 250 г</div><div class="ing-item">· Морковь — 1 шт</div><div class="ing-item">· Сметана — 1 ст.л.</div><div class="ing-item">· Сливочное масло — 10 г</div><div class="ing-item">· Соль, перец, лаврушка</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Картофель нарежь кубиками, залей водой, посоли. Вари 15 мин.</div></div><div class="step"><div class="step-num">2</div><div>Минтай нарежь, посоли и поперчи.</div></div><div class="step"><div class="step-num">3</div><div>В сковороду: 100 мл воды + сметана + тёртая морковь + лаврушка.</div></div><div class="step"><div class="step-num">4</div><div>Когда закипит — положи рыбу. Туши 12 мин под крышкой.</div></div><div class="step"><div class="step-num">5</div><div>Картошку сдобри маслом. Подавай с рыбой и соусом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Минтай на развес в Агрокомплексе на Тренева, 3А — дешевле упакованного.</div>
+  </div>
+</div></div>
+</details><details class="recipe-day" >
+  <summary>
+    <div class="rday-num">03</div>
+    <div class="rday-title">Среда<span class="sub">4 блюда · ~50 мин готовки за день</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Сырники классические</div>
+    <div class="recipe-time">⏱ <span>15 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Творог 5% — 200 г</div><div class="ing-item">· Яйцо — 1 шт</div><div class="ing-item">· Мука — 2 ст.л.</div><div class="ing-item">· Сахар — 1 ч.л.</div><div class="ing-item">· Щепотка соли</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Сметана + мёд</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Разомни творог. Добавь яйцо, сахар, соль, муку. Перемешай.</div></div><div class="step"><div class="step-num">2</div><div>Дай постоять 5 мин — мука впитает влагу.</div></div><div class="step"><div class="step-num">3</div><div>Влажными руками слепи 4–5 лепёшек толщиной 1.5 см.</div></div><div class="step"><div class="step-num">4</div><div>Жарь на среднем огне по 3 мин с каждой стороны.</div></div><div class="step"><div class="step-num">5</div><div>Подавай со сметаной и мёдом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Влажный творог — отожми в марле, иначе сырники развалятся.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Куриные котлеты + картофельное пюре</div>
+    <div class="recipe-time">⏱ <span>30 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриный фарш — 180 г</div><div class="ing-item">· Картофель — 250 г</div><div class="ing-item">· Молоко горячее — 80 мл</div><div class="ing-item">· Сливочное масло — 15 г</div><div class="ing-item">· Яйцо — 1 шт</div><div class="ing-item">· Хлеб (мякиш) — 1 ломтик</div><div class="ing-item">· Соль, перец</div><div class="ing-item">· Растит. масло — 1 ст.л.</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Картофель вари 20 мин в подсоленной воде.</div></div><div class="step"><div class="step-num">2</div><div>В фарш: яйцо + хлеб в молоке + соль + перец. Отбей о миску 10 раз.</div></div><div class="step"><div class="step-num">3</div><div>Слепи 2 котлеты. Жарь по 4 мин с каждой стороны. В конце крышкой на 2 мин.</div></div><div class="step"><div class="step-num">4</div><div>Картошку разомни с горячим молоком и маслом.</div></div><div class="step"><div class="step-num">5</div><div>Подавай котлеты с пюре и огурцом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Молоко в пюре — только горячее, иначе пюре станет серым и клейким.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Бутерброды с сыром и помидором</div>
+    <div class="recipe-time">⏱ <span>4 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Хлеб — 2 ломтика</div><div class="ing-item">· Сливочное масло — 15 г</div><div class="ing-item">· Сыр — 50 г</div><div class="ing-item">· Помидор — 1 шт</div><div class="ing-item">· Банан — 1 шт</div><div class="ing-item">· Чай + мёд</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Хлеб подсуши в тостере.</div></div><div class="step"><div class="step-num">2</div><div>Намажь маслом, положи сыр и помидор.</div></div><div class="step"><div class="step-num">3</div><div>Заешь бананом, запей чаем с мёдом.</div></div>
+    
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Макароны с тунцом</div>
+    <div class="recipe-time">⏱ <span>15 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Макароны — 100 г</div><div class="ing-item">· Тунец в собств. соку — 1 банка (150 г)</div><div class="ing-item">· Помидор — 1 шт</div><div class="ing-item">· Чеснок — 1 зубчик</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Яйцо варёное — 1 шт</div><div class="ing-item">· Соль, перец, орегано</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Поставь варить макароны. Яйцо — 8 мин в кипяток.</div></div><div class="step"><div class="step-num">2</div><div>Тунца слегка отожми. Помидор нарежь, чеснок поруби.</div></div><div class="step"><div class="step-num">3</div><div>Обжарь чеснок 30 сек. Добавь помидор, туши 3 мин.</div></div><div class="step"><div class="step-num">4</div><div>Добавь тунец, разомни вилкой. Орегано, соль. Прогрей 1 мин.</div></div><div class="step"><div class="step-num">5</div><div>Смешай с макаронами. Сверху — половинки яйца.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Тунец в собственном соку — тот же белок, вдвое меньше калорий, чем в масле.</div>
+  </div>
+</div></div>
+</details><details class="recipe-day" >
+  <summary>
+    <div class="rday-num">04</div>
+    <div class="rday-title">Четверг<span class="sub">4 блюда · ~55 мин готовки за день</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Гранола с молоком и бананом</div>
+    <div class="recipe-time">⏱ <span>2 мин (гранола — раз в неделю)</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Гранола — 80 г</div><div class="ing-item">· Молоко/йогурт — 250 мл</div><div class="ing-item">· Банан — 1 шт</div><div class="ing-item">· Арахисовая паста — 1 ст.л.</div><div class="ing-item">· — Гранола (5 порций): хлопья ржаные 150 г,</div><div class="ing-item">·   орехи 80 г, мёд 3 ст.л., масло 1 ст.л., корица, изюм</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>ГРАНОЛА: духовка 160°C. Смешай хлопья + орехи + корицу + мёд + масло.</div></div><div class="step"><div class="step-num">2</div><div>Ровный слой на пергаменте. Печь 15 мин, перемешать на 8-й мин.</div></div><div class="step"><div class="step-num">3</div><div>Остуди, добавь изюм. Банка с крышкой — хранится 2 недели.</div></div><div class="step"><div class="step-num">4</div><div>УТРОМ: 80 г гранолы + молоко/йогурт + банан + арахисовая паста. 2 минуты.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Готовится раз в неделю — утром занимает 2 минуты. Другой вкус и текстура по сравнению с кашей.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Плов с курицей (без лука)</div>
+    <div class="recipe-time">⏱ <span>40 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриное филе — 180 г</div><div class="ing-item">· Рис — 100 г</div><div class="ing-item">· Морковь — 1 крупная</div><div class="ing-item">· Чеснок — 2 зубчика</div><div class="ing-item">· Растит. масло — 2 ст.л.</div><div class="ing-item">· Соль, зира, куркума, перец</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Промой рис до прозрачности, оставь набухать 20 мин.</div></div><div class="step"><div class="step-num">2</div><div>Курицу нарежь кубиками 2×2 см, морковь — длинной соломкой.</div></div><div class="step"><div class="step-num">3</div><div>В кастрюле обжарь курицу 5 мин. Добавь морковь ещё 5 мин. Посоли + зира + куркума.</div></div><div class="step"><div class="step-num">4</div><div>Рис поверх мяса. Залей горячей водой на 1.5 см выше риса. Воткни чеснок.</div></div><div class="step"><div class="step-num">5</div><div>Вари 20 мин на минимуме под крышкой. Оставь ещё 10 мин. Перемешай.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Удвой морковь вместо лука — её сладость полностью компенсирует.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Творог с бананом и миндалём</div>
+    <div class="recipe-time">⏱ <span>2 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Творог 5% — 200 г</div><div class="ing-item">· Банан — 1 шт</div><div class="ing-item">· Мёд — 1 ст.л.</div><div class="ing-item">· Миндаль — 20 г</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Банан разомни вилкой до пюре.</div></div><div class="step"><div class="step-num">2</div><div>Добавь творог и мёд, перемешай.</div></div><div class="step"><div class="step-num">3</div><div>Посыпь миндалём.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Взбей блендером — получится крем-десерт как из кафе. Хранится 12 часов.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Жареная картошка с яичницей</div>
+    <div class="recipe-time">⏱ <span>20 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Картофель — 300 г</div><div class="ing-item">· Яйца — 2 шт</div><div class="ing-item">· Сосиски — 2 шт</div><div class="ing-item">· Растит. масло — 1.5 ст.л.</div><div class="ing-item">· Помидор — 1 шт</div><div class="ing-item">· Соль, перец, паприка</div><div class="ing-item">· Кефир — 250 мл</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Картофель нарежь соломкой 0.5 см.</div></div><div class="step"><div class="step-num">2</div><div>Сосиски нарежь кружочками.</div></div><div class="step"><div class="step-num">3</div><div>Картошку одним слоем на сильном огне — не трогай 3–4 мин. Переверни. Ещё 3–4 мин. Посоли в конце.</div></div><div class="step"><div class="step-num">4</div><div>Добавь сосиски. Разбей яйца, посоли. Мешай лопаткой 2 мин.</div></div><div class="step"><div class="step-num">5</div><div>Подавай с помидором. Запей кефиром.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Бери сосиски с содержанием мяса от 60% — там реальный белок, не крахмал.</div>
+  </div>
+</div></div>
+</details><details class="recipe-day" >
+  <summary>
+    <div class="rday-num">05</div>
+    <div class="rday-title">Пятница<span class="sub">4 блюда · ~50 мин готовки за день</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Горячий сэндвич с яйцом и сыром</div>
+    <div class="recipe-time">⏱ <span>10 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Хлеб — 2 ломтика</div><div class="ing-item">· Яйцо — 1 шт</div><div class="ing-item">· Сыр — 40 г</div><div class="ing-item">· Сливочное масло — 15 г</div><div class="ing-item">· Помидор — 1 шт</div><div class="ing-item">· Банан — 1 шт</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Жарь яйцо на масле 2 мин, переверни на 30 сек.</div></div><div class="step"><div class="step-num">2</div><div>Поджарь хлеб с маслом по 1 мин с каждой стороны.</div></div><div class="step"><div class="step-num">3</div><div>Собери: хлеб — помидор — яйцо — сыр — хлеб. Прижми лопаткой.</div></div><div class="step"><div class="step-num">4</div><div>На сковороду на 1 мин — сыр расплавится.</div></div><div class="step"><div class="step-num">5</div><div>Подавай с бананом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Добавь вчерашнюю курицу из контейнера — сэндвич станет белковой бомбой на 40+ г белка.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Паста с фаршем и сыром</div>
+    <div class="recipe-time">⏱ <span>20 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Макароны — 100 г</div><div class="ing-item">· Говяжий фарш — 150 г</div><div class="ing-item">· Томатная паста — 2 ст.л.</div><div class="ing-item">· Сыр тёртый — 30 г</div><div class="ing-item">· Чеснок — 1 зубчик</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Соль, перец, орегано</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Поставь воду для макарон.</div></div><div class="step"><div class="step-num">2</div><div>Чеснок раздави и обжарь 30 сек, убери.</div></div><div class="step"><div class="step-num">3</div><div>Фарш жарь 6–7 мин, разбивая лопаткой.</div></div><div class="step"><div class="step-num">4</div><div>Томатная паста + 100 мл воды от макарон + орегано + специи. Туши 5 мин.</div></div><div class="step"><div class="step-num">5</div><div>Смешай макароны с соусом. Посыпь сыром.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Макароны аль денте — на 1 мин меньше, чем на упаковке. Доготовятся в соусе.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Гранола с йогуртом и яблоком</div>
+    <div class="recipe-time">⏱ <span>2 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Гранола (из четверга) — 80 г</div><div class="ing-item">· Йогурт натуральный — 200 мл</div><div class="ing-item">· Мёд — 1 ч.л.</div><div class="ing-item">· Яблоко — 1 шт</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Налей йогурт в миску. Насыпь гранолу сверху.</div></div><div class="step"><div class="step-num">2</div><div>Полей мёдом. Нарежь яблоко.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Собери с вечера в банке — идеальный офисный перекус без посуды.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Картошка с курицей в духовке</div>
+    <div class="recipe-time">⏱ <span>40 мин (5 мин активно)</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриные бёдра — 180 г</div><div class="ing-item">· Картофель — 250 г</div><div class="ing-item">· Чеснок — 2 зубчика</div><div class="ing-item">· Растит. масло — 1.5 ст.л.</div><div class="ing-item">· Соль, перец, паприка, травы</div><div class="ing-item">· Огурец, помидор</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Духовка 200°C.</div></div><div class="step"><div class="step-num">2</div><div>Картофель — дольками, бёдра — кусками по 3 см.</div></div><div class="step"><div class="step-num">3</div><div>В миске смешай всё с маслом и специями руками.</div></div><div class="step"><div class="step-num">4</div><div>Выложи на противень ОДНИМ СЛОЕМ — иначе тушится, не запекается.</div></div><div class="step"><div class="step-num">5</div><div>35 мин. За 5 мин до конца переверни для корочки.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Запеки двойную порцию — завтра в контейнере на работу без дополнительной готовки.</div>
+  </div>
+</div></div>
+</details><details class="recipe-day" >
+  <summary>
+    <div class="rday-num">06</div>
+    <div class="rday-title">Суббота<span class="sub">4 блюда · ~60 мин готовки за день</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Творожные блины (без муки)</div>
+    <div class="recipe-time">⏱ <span>15 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Творог 5% — 200 г</div><div class="ing-item">· Яйца — 2 шт</div><div class="ing-item">· Банан — 1 шт</div><div class="ing-item">· Щепотка соли</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Сметана + мёд</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Взбей в блендере творог + яйца + банан + соль до однородности.</div></div><div class="step"><div class="step-num">2</div><div>Тесто жидкое — это нормально.</div></div><div class="step"><div class="step-num">3</div><div>Средний огонь, слегка смазать маслом.</div></div><div class="step"><div class="step-num">4</div><div>2–3 ст.л. теста, наклоняй сковороду. Жарь 1.5–2 мин, переверни.</div></div><div class="step"><div class="step-num">5</div><div>Подавай стопкой со сметаной и мёдом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Банан сладкий — сахар не нужен. Можно завернуть кусочки яблока или груши.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Курица терияки с рисом</div>
+    <div class="recipe-time">⏱ <span>30 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриное филе — 200 г</div><div class="ing-item">· Рис — 100 г</div><div class="ing-item">· Соевый соус — 1 ст.л.</div><div class="ing-item">· Мёд — 1 ч.л.</div><div class="ing-item">· Чеснок — 1 зубчик</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Морковь по-корейски — 80 г</div><div class="ing-item">· Огурец</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Свари рис.</div></div><div class="step"><div class="step-num">2</div><div>Филе нарежь полосками поперёк волокон.</div></div><div class="step"><div class="step-num">3</div><div>Смешай: соевый соус + мёд + чеснок. Добавь курицу, оставь 5 мин.</div></div><div class="step"><div class="step-num">4</div><div>Жарь на сильном огне 2 мин не трогая, потом 3–4 мин перемешивая.</div></div><div class="step"><div class="step-num">5</div><div>Подавай с рисом, морковью по-корейски и огурцом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Соевый соус солёный — не добавляй соль до пробы.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Горячий сэндвич с сыром + яйцо</div>
+    <div class="recipe-time">⏱ <span>7 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Хлеб — 2 ломтика</div><div class="ing-item">· Сыр — 50 г</div><div class="ing-item">· Сливочное масло — 10 г</div><div class="ing-item">· Яйцо варёное — 1 шт</div><div class="ing-item">· Яблоко</div><div class="ing-item">· Кефир — 250 мл</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Сэндвич: хлеб + масло + сыр. Подогрей на сухой сковороде 1 мин с каждой стороны.</div></div><div class="step"><div class="step-num">2</div><div>Запей кефиром, заешь яйцом и яблоком.</div></div>
+    
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Гречка + говяжьи котлеты</div>
+    <div class="recipe-time">⏱ <span>25 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Говяжий фарш — 180 г</div><div class="ing-item">· Гречка — 100 г</div><div class="ing-item">· Яйцо — 1 шт</div><div class="ing-item">· Хлеб (мякиш)</div><div class="ing-item">· Молоко — 2 ст.л.</div><div class="ing-item">· Чеснок — 1 зубчик</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Соль, перец</div><div class="ing-item">· Помидор</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Свари гречку.</div></div><div class="step"><div class="step-num">2</div><div>Хлеб замочи в молоке 2 мин, отожми. К фаршу: яйцо + хлеб + чеснок + соль + перец.</div></div><div class="step"><div class="step-num">3</div><div>Перемешай и отбей о миску 10 раз.</div></div><div class="step"><div class="step-num">4</div><div>Слепи 2 котлеты влажными руками.</div></div><div class="step"><div class="step-num">5</div><div>Жарь по 4 мин с каждой стороны, накрой крышкой на 3 мин. Подавай с гречкой.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Влажные руки — фарш не прилипает, котлеты гладкие и ровные.</div>
+  </div>
+</div></div>
+</details><details class="recipe-day" >
+  <summary>
+    <div class="rday-num">07</div>
+    <div class="rday-title">Воскресенье<span class="sub">4 блюда + batch cooking на неделю</span></div>
+    <div class="rday-arrow">+</div>
+  </summary>
+  <div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#6fbf60">ЗАВТРАК</div>
+    <div class="recipe-name">Пшённая каша на молоке</div>
+    <div class="recipe-time">⏱ <span>20 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Пшено — 70 г</div><div class="ing-item">· Молоко 2.5% — 300 мл</div><div class="ing-item">· Вода — 100 мл</div><div class="ing-item">· Сливочное масло — 15 г</div><div class="ing-item">· Мёд — 1 ст.л.</div><div class="ing-item">· Банан — 1 шт</div><div class="ing-item">· Щепотка соли</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Промой пшено под ГОРЯЧЕЙ водой — убирает горечь. Ключевой шаг!</div></div><div class="step"><div class="step-num">2</div><div>Залей 100 мл воды, вари 5 мин. Слей остаток воды.</div></div><div class="step"><div class="step-num">3</div><div>Залей молоком, посоли. Вари 12–15 мин, помешивая.</div></div><div class="step"><div class="step-num">4</div><div>Добавь масло, перемешай.</div></div><div class="step"><div class="step-num">5</div><div>Подавай с мёдом и бананом.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Пшённая каша ~370 ккал на порцию, богата железом, B6 и магнием. Горечи не будет если промыть горячей водой.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">ОБЕД</div>
+    <div class="recipe-name">Курица под сыром + макароны</div>
+    <div class="recipe-time">⏱ <span>30 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Куриное филе — 200 г</div><div class="ing-item">· Макароны — 100 г</div><div class="ing-item">· Сыр — 40 г</div><div class="ing-item">· Помидор</div><div class="ing-item">· Сметана — 1 ст.л.</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Соль, перец, паприка</div><div class="ing-item">· Огурец</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Духовка 200°C. Поставь воду для макарон.</div></div><div class="step"><div class="step-num">2</div><div>Филе разрежь вдоль на 2 пласта, натри специями.</div></div><div class="step"><div class="step-num">3</div><div>В форму: помидор кружочками + сметана + тёртый сыр сверху.</div></div><div class="step"><div class="step-num">4</div><div>Запеки 20 мин — сыр должен подрумяниться.</div></div><div class="step"><div class="step-num">5</div><div>Свари макароны + кусочек масла. Подавай всё с огурцом.</div></div>
+    <div class="tip-box"><strong>Лайфхак</strong>Любую запекаемую курицу делай не толще 2 см — иначе сверху сгорит, внутри сырая.</div>
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#5fb3d9">ПЕРЕКУС</div>
+    <div class="recipe-name">Творог с изюмом и орехами</div>
+    <div class="recipe-time">⏱ <span>2 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Творог 5% — 200 г</div><div class="ing-item">· Сметана — 1 ст.л.</div><div class="ing-item">· Изюм — 20 г</div><div class="ing-item">· Грецкие орехи — 30 г</div><div class="ing-item">· Мёд — 1 ч.л.</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Изюм залей кипятком на 1 мин, слей воду.</div></div><div class="step"><div class="step-num">2</div><div>Орехи поруби крупно.</div></div><div class="step"><div class="step-num">3</div><div>Смешай творог + сметана + мёд + изюм + орехи.</div></div>
+    
+  </div>
+</div><div class="recipe">
+  <div>
+    <div class="meal-badge" style="background:#ff5c2a">УЖИН</div>
+    <div class="recipe-name">Запечённая рыба + картофельное пюре</div>
+    <div class="recipe-time">⏱ <span>30 мин</span></div>
+    <div class="ing-label">Ингредиенты</div>
+    <div class="ing-item">· Рыба (минтай/треска) — 200 г</div><div class="ing-item">· Картофель — 250 г</div><div class="ing-item">· Молоко горячее — 80 мл</div><div class="ing-item">· Сливочное масло — 15 г</div><div class="ing-item">· Лимон — 1/4</div><div class="ing-item">· Растит. масло — 1 ст.л.</div><div class="ing-item">· Соль, перец, травы</div><div class="ing-item">· Помидор</div><div class="ing-item">· Кефир — 250 мл</div>
+  </div>
+  <div>
+    <span class="step-label">Приготовление</span>
+    <div class="step"><div class="step-num">1</div><div>Духовка 200°C. Поставь вариться картофель.</div></div><div class="step"><div class="step-num">2</div><div>Рыбу обсуши, посоли, поперчи, лимонный сок + масло + травы.</div></div><div class="step"><div class="step-num">3</div><div>Заверни в фольгу конвертом. Запеки 18 мин.</div></div><div class="step"><div class="step-num">4</div><div>Картошку разомни с горячим молоком и маслом.</div></div><div class="step"><div class="step-num">5</div><div>Подавай с помидором и кефиром.</div></div>
+    <div class="tip-box"><strong>Совет</strong>Лимон убивает рыбный запах и делает мясо нежнее. Нет лимона — 1/2 ч.л. яблочного уксуса.</div>
+  </div>
+</div></div>
+</details>
+</div>
+</section>
+<section id="nocook">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">06 / NO-COOK</div>
+  <div class="sec-title">Когда некогда <em>готовить</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Комплекты, которые собираются за <strong>1–3 минуты</strong> без плиты. Держи эти продукты дома всегда — это страховка от пропуска приёма.</p>
+  <div class="nocook-grid"><div class="nc-item">
+  <div class="nc-label">А · МОЛОЧНЫЙ</div>
+  <div class="nc-time">1<span>мин</span></div>
+  <div class="nc-title">Творог 200 г + мёд + орехи + банан</div>
+  <div class="nc-kcal">~520 ккал · 35 г белка</div>
+  <div class="nc-body">Открыл, полил, съел. Никакой плиты.<strong>Варианты:</strong><span>Творог + варенье / Йогурт + гранола / Творог + изюм</span></div>
+</div><div class="nc-item">
+  <div class="nc-label">Б · БУТЕРБРОДНЫЙ</div>
+  <div class="nc-time">2<span>мин</span></div>
+  <div class="nc-title">Хлеб ×2 + масло + сыр + кефир + банан + орехи</div>
+  <div class="nc-kcal">~680 ккал · 28 г белка</div>
+  <div class="nc-body">Нарезал, намазал, налил.<strong>Варианты:</strong><span>+ тунец из банки / + варёное яйцо / заменить на хлебцы</span></div>
+</div><div class="nc-item">
+  <div class="nc-label">В · ШЕЙК</div>
+  <div class="nc-time">3<span>мин</span></div>
+  <div class="nc-title">Молоко 400 мл + банан + арахисовая паста + хлопья</div>
+  <div class="nc-kcal">~620 ккал · 22 г белка</div>
+  <div class="nc-body">Взбил блендером 20 секунд.<strong>Почему работает:</strong><span>Жидкие калории усваиваются быстрее. Если тяжело есть много — пить проще.</span></div>
+</div></div>
+  <div class="nocook-strategy">
+    <div class="ns-col">
+      <div class="ns-title">Стратегия «3 приёма без готовки»</div>
+      <div class="ns-row"><strong>Утро (07:30)</strong> — Комплект А или В<br><span style="font-size:13px;color:var(--muted)">Творог с мёдом и орехами ИЛИ шейк. 1–3 минуты. Плита не нужна.</span></div><div class="ns-row"><strong>День (13:00)</strong> — Контейнер из дома<br><span style="font-size:13px;color:var(--muted)">Если готовил вечером — берёшь. Если нет — Агрокомплекс на Тренева, 3А.</span></div><div class="ns-row"><strong>Вечер (20:00)</strong> — Комплект Б + что-то горячее<br><span style="font-size:13px;color:var(--muted)">Бутерброды + кефир + варёные яйца (сварить 10 штук за раз — 10 мин на неделю).</span></div>
+    </div>
+    <div class="ns-col">
+      <div class="ns-title">Держать дома ВСЕГДА</div>
+      <div class="ns-list"><span>Творог 5% × 2 пачки</span><span>Яйца × 10–15 шт (варить за раз)</span><span>Кефир / молоко</span><span>Сыр твёрдый</span><span>Хлеб / хлебцы + сливочное масло</span><span>Бананы × 5–7 шт</span><span>Орехи (грецкий, арахис, миндаль)</span><span>Тунец консерв. × 2–3 банки</span><span>Гранола или хлопья</span><span>Арахисовая паста (Mr.Djemius)</span></div>
+    </div>
+  </div>
+</div>
+</section>
+<section id="workout">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">07 / WORKOUT</div>
+  <div class="sec-title">Тренировка <em>дома с гантелей</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Гантеля 2.5 кг — хороший старт. <strong>3 тренировки в неделю по 30–40 минут.</strong> При высоком числе повторений (15–25) создаёт реальный стимул роста. Ключевое условие — <strong>прогрессия нагрузки.</strong></p>
+  <div class="workout-grid"><div class="wd">
+  <div class="wd-tag">День A · Верх тела</div>
+  <div class="wd-sched">Пн / Пт · ~35 мин · Отдых между подходами — 60 сек</div>
+  <div class="wd-ex">Отжимания <span class="sets">3×12–15</span></div><div class="wd-ex">Жим гантели лёжа на полу <span class="sets">3×15</span></div><div class="wd-ex">Тяга гантели в наклоне <span class="sets">3×15 каждой рукой</span></div><div class="wd-ex">Жим гантелей стоя <span class="sets">3×15</span></div><div class="wd-ex">Подъём на бицепс <span class="sets">3×15</span></div><div class="wd-ex">Разгибание на трицепс <span class="sets">3×15</span></div>
+</div><div class="wd">
+  <div class="wd-tag">День B · Низ + пресс</div>
+  <div class="wd-sched">Ср · ~30 мин · Отдых между подходами — 60 сек</div>
+  <div class="wd-ex">Приседания с гантелей <span class="sets">3×20</span></div><div class="wd-ex">Выпады с гантелей <span class="sets">3×12 каждой ногой</span></div><div class="wd-ex">Румынская тяга с гантелей <span class="sets">3×15</span></div><div class="wd-ex">Ягодичный мост <span class="sets">3×20</span></div><div class="wd-ex">Планка <span class="sets">3×30–45 сек</span></div><div class="wd-ex">Скручивания <span class="sets">3×15</span></div>
+</div><div class="wd">
+  <div class="wd-tag">Прогрессия по неделям</div>
+  <div class="wd-sched">расписание роста </div>
+  <div class="wd-ex">Недели 1–4 <span class="sets">освой технику, 2.5 кг, 3×12</span></div><div class="wd-ex">Недели 5–8 <span class="sets">увеличь повторения до 20–25</span></div><div class="wd-ex">После 8 недель <span class="sets">купи 5–8 кг на Авито (~500–1000 ₽ б/у)</span></div><div class="wd-ex">После 16 недель <span class="sets">разборные гантели 10–15 кг или зал</span></div><div class="wd-ex">Правило прогрессии <span class="sets">без роста нагрузки — нет роста мышц</span></div>
+</div></div>
+  <div class="info-box" style="margin-top:0">
+    <p>С тренировками норма меняется: белок → 1.8 г/кг = 120 г/день (уже учтено). В дни тренировок калории → 2600–2700 ккал (добавь стакан молока или горсть орехов). В дни отдыха — стандартные 2500 ккал.</p>
+  </div>
+</div>
+</section>
+<section id="tracker">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">08 / TRACKER</div>
+  <div class="sec-title">Трекер <em>каждого дня</em></div>
+</div>
+<div class="sec-wrap">
+  <div class="tracker-wrap">
+    <div class="tracker-title">Ежедневный чек-лист</div>
+    <div class="tracker-sub">НАЖМИ НА ЭЛЕМЕНТ ЧТОБЫ ОТМЕТИТЬ · СОХРАНЯЕТСЯ В БРАУЗЕРЕ</div>
+    <div class="tracker-bar-wrap">
+      <div class="tracker-bar-bg"><div class="tracker-bar-fill" id="tbar" style="width:0%"></div></div>
+      <div class="tracker-pct" id="tpct">0%</div>
+      <div class="tracker-msg" id="tmsg">Начни с завтрака — это меняет всё.</div>
+    </div>
+    <div class="tracker-grid"><div class="t-item" id="t_meal1" onclick="toggleItem('meal1')">
+  <span class="t-icon">🍳</span>
+  <span class="t-label">Завтрак</span>
+  <span class="t-check" id="chk_meal1">○</span>
+</div><div class="t-item" id="t_meal2" onclick="toggleItem('meal2')">
+  <span class="t-icon">🥗</span>
+  <span class="t-label">Обед</span>
+  <span class="t-check" id="chk_meal2">○</span>
+</div><div class="t-item" id="t_snack" onclick="toggleItem('snack')">
+  <span class="t-icon">🥜</span>
+  <span class="t-label">Перекус</span>
+  <span class="t-check" id="chk_snack">○</span>
+</div><div class="t-item" id="t_meal3" onclick="toggleItem('meal3')">
+  <span class="t-icon">🍽️</span>
+  <span class="t-label">Ужин</span>
+  <span class="t-check" id="chk_meal3">○</span>
+</div><div class="t-item" id="t_water" onclick="toggleItem('water')">
+  <span class="t-icon">💧</span>
+  <span class="t-label">Вода</span>
+  <span class="t-check" id="chk_water">○</span>
+</div><div class="t-item" id="t_protein" onclick="toggleItem('protein')">
+  <span class="t-icon">🥛</span>
+  <span class="t-label">120 г белка</span>
+  <span class="t-check" id="chk_protein">○</span>
+</div><div class="t-item" id="t_workout" onclick="toggleItem('workout')">
+  <span class="t-icon">🏋️</span>
+  <span class="t-label">Тренировка</span>
+  <span class="t-check" id="chk_workout">○</span>
+</div><div class="t-item" id="t_sleep" onclick="toggleItem('sleep')">
+  <span class="t-icon">😴</span>
+  <span class="t-label">Сон 8 ч</span>
+  <span class="t-check" id="chk_sleep">○</span>
+</div><div class="t-item" id="t_container" onclick="toggleItem('container')">
+  <span class="t-icon">📦</span>
+  <span class="t-label">Контейнер на завтра</span>
+  <span class="t-check" id="chk_container">○</span>
+</div><div class="t-item" id="t_casein" onclick="toggleItem('casein')">
+  <span class="t-icon">🌙</span>
+  <span class="t-label">Казеин на ночь</span>
+  <span class="t-check" id="chk_casein">○</span>
+</div></div>
+    <button class="tracker-reset" onclick="resetTracker()">↺ Сбросить день</button>
+  </div>
+</div>
+<script>
+const MSGS = ['Начни с завтрака — это меняет всё.', '1/10 — хорошее начало!', '2/10 — уже лучше вчера.', '3/10 — режим формируется.', '4/10 — почти половина!', '5/10 — ровно на середине 💪', '6/10 — больше половины, отлично!', '7/10 — сильный день!', '8/10 — почти идеально!', '9/10 — один шаг до максимума!', '10/10 — идеальный день! 🏆 Так и строится масса.'];
+let done = new Set(JSON.parse(localStorage.getItem('tracker_done')||'[]'));
+function render(){
+  done.forEach(k=>{
+    document.getElementById('t_'+k)?.classList.add('done');
+    const c=document.getElementById('chk_'+k);
+    if(c)c.textContent='✓';
+  });
+  const pct=Math.round(done.size/10*100);
+  document.getElementById('tbar').style.width=pct+'%';
+  document.getElementById('tpct').textContent=pct+'%';
+  document.getElementById('tmsg').textContent=MSGS[done.size]||'';
+}
+function toggleItem(k){
+  if(done.has(k)){done.delete(k);document.getElementById('t_'+k).classList.remove('done');document.getElementById('chk_'+k).textContent='○';}
+  else{done.add(k);document.getElementById('t_'+k).classList.add('done');document.getElementById('chk_'+k).textContent='✓';}
+  localStorage.setItem('tracker_done',JSON.stringify([...done]));
+  const pct=Math.round(done.size/10*100);
+  document.getElementById('tbar').style.width=pct+'%';
+  document.getElementById('tpct').textContent=pct+'%';
+  document.getElementById('tmsg').textContent=MSGS[done.size]||'';
+}
+function resetTracker(){done.clear();localStorage.removeItem('tracker_done');document.querySelectorAll('.t-item').forEach(el=>el.classList.remove('done'));document.querySelectorAll('.t-check').forEach(el=>el.textContent='○');document.getElementById('tbar').style.width='0%';document.getElementById('tpct').textContent='0%';document.getElementById('tmsg').textContent=MSGS[0];}
+render();
+</script>
+</section>
+<section id="batch">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">09 / BATCH</div>
+  <div class="sec-title">Заготовки <em>на неделю</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text"><strong>Воскресенье, 1 час</strong> — и у тебя еда на 4–5 дней без ежедневной готовки. Решает проблему «не успеваю готовить» навсегда.</p>
+  <div class="batch-grid">
+    <div class="batch-time">20 мин</div>
+<div class="batch-content"><h5>Запечь 500 г куриного филе</h5><p>Натри паприкой, солью, перцем. Завернуть в фольгу, 200°C / 20 мин. Нарезать и разложить по контейнерам. Хранить 4 дня в холодильнике.</p></div><div class="batch-time">15 мин</div>
+<div class="batch-content"><h5>Сварить 10–12 яиц</h5><p>Залей холодной водой, доведи до кипения, вари 8 мин. Охлади, не чисти — так хранятся 7 дней. Чистить по одному утром.</p></div><div class="batch-time">20 мин</div>
+<div class="batch-content"><h5>Сварить 300 г крупы</h5><p>Гречка или рис — 300 г сухой = 6–7 порций гарнира. Хранить в контейнере 4–5 дней. Разогревать 1 мин в микроволновке.</p></div><div class="batch-time">5 мин</div>
+<div class="batch-content"><h5>Приготовить гранолу на неделю</h5><p>160°C, 15 мин, перемешать на 8-й мин. Хранится 2 недели в банке при комнатной температуре.</p></div><div class="batch-time">5 мин</div>
+<div class="batch-content"><h5>Нарезать и расфасовать овощи</h5><p>Морковь + огурцы + помидоры нарезать и разложить по пакетам. Хранится 3–4 дня — готовый салат за 0 минут.</p></div>
+    <div class="batch-total">1 час в воскресенье → 4–5 дней питания без ежедневной готовки</div>
+  </div>
+</div>
+</section>
+<section id="energy">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">10 / ENERGY</div>
+  <div class="sec-title">Протокол <em>энергии</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Провалы энергии в течение дня — прямое следствие 1 приёма пищи и кофе натощак. <strong>3–4 приёма = стабильный уровень глюкозы = стабильная энергия без кофеиновых костылей.</strong></p>
+  <div class="energy-timeline"><div class="e-time">07:30</div>
+<div class="e-content">
+  <h5>Завтрак — обязателен</h5>
+  <div class="e-action">Завтрак — обязателен</div>
+  <div class="e-detail">Углеводы + белок. Твой главный источник энергии на первую половину дня. На голодный желудок когнитивные функции снижаются на 20–30%.</div>
+  <div class="e-pills"><span class="pill good">✓ Гречка/пшёнка на молоке + орехи</span><span class="pill good">✓ Творог + банан + гранола</span><span class="pill good">✓ Яичница + тост</span><span class="pill bad">✗ Только кофе</span><span class="pill bad">✗ Ничего до обеда</span></div>
+</div><div class="e-time warn">08:30</div>
+<div class="e-content">
+  <h5>Кофе — после еды</h5>
+  <div class="e-action">Кофе — после еды</div>
+  <div class="e-detail">Кофе натощак → спайк кортизола → искусственная бодрость → спад через 2–3 часа. После завтрака кофеин работает мягче и дольше. Не больше 2–3 чашек в день.</div>
+  <div class="e-pills"><span class="pill good">✓ Кофе с молоком после завтрака</span><span class="pill good">✓ Чай с мёдом</span><span class="pill bad">✗ Кофе натощак</span><span class="pill bad">✗ Энергетики (разрушают сон)</span></div>
+</div><div class="e-time">12:30–13:30</div>
+<div class="e-content">
+  <h5>Обед — самый калорийный приём</h5>
+  <div class="e-action">Обед — самый калорийный приём</div>
+  <div class="e-detail">~800 ккал. Крупа + мясо + овощи. Если обед пропущен — к 15:00 гарантированный «провал» энергии и тяга к сладкому.</div>
+  <div class="e-pills"><span class="pill good">✓ Контейнер из дома (вечером предыдущего дня)</span><span class="pill good">✓ Покупка у Агрокомплекса</span><span class="pill bad">✗ Пропустить</span><span class="pill bad">✗ Только кофе и булочка</span></div>
+</div><div class="e-time">16:30–17:00</div>
+<div class="e-content">
+  <h5>Перекус перед/после тренировки</h5>
+  <div class="e-action">Перекус перед/после тренировки</div>
+  <div class="e-detail">Если тренируешься вечером — ешь за 60–90 мин до начала. Углеводы дадут энергию на тренировку, белок запустит синтез мышц после.</div>
+  <div class="e-pills"><span class="pill good">✓ Творог + банан</span><span class="pill good">✓ Йогурт + гранола</span><span class="pill good">✓ Бутерброд с сыром + кефир</span><span class="pill bad">✗ Тренировка натощак (потеря мышц)</span><span class="pill bad">✗ Плотная еда за 30 мин до</span></div>
+</div><div class="e-time">20:00–21:00</div>
+<div class="e-content">
+  <h5>Ужин — белок на ночь</h5>
+  <div class="e-action">Ужин — белок на ночь</div>
+  <div class="e-detail">Ночью идёт основное восстановление и рост мышц. Медленный белок (творог, кефир) = питание мышц 6–8 часов во сне. Не позже 21:00 для нормального сна.</div>
+  <div class="e-pills"><span class="pill good">✓ Рыба/курица + крупа + творог на ночь</span><span class="pill good">✓ Кефир 250 мл перед сном</span><span class="pill bad">✗ Жирное жареное после 21:00</span><span class="pill bad">✗ Голодный сон</span></div>
+</div><div class="e-time">22:30</div>
+<div class="e-content">
+  <h5>Стакан кефира — казеин на ночь</h5>
+  <div class="e-action">Стакан кефира — казеин на ночь</div>
+  <div class="e-detail">Кефир и творог содержат казеиновый белок — он переваривается 6–8 часов. 150 ккал + 10 г белка пока ты спишь = +300–400 г мышечной ткани в месяц.</div>
+  <div class="e-pills"><span class="pill good">✓ Кефир 250 мл</span><span class="pill good">✓ Творог 100 г + мёд</span><span class="pill bad">✗ Ничего или сладкое перед сном</span></div>
+</div></div>
+</div>
+</section>
+<section id="seasonal">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">11 / СЕЗОН</div>
+  <div class="sec-title">Сезонные <em>замены</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Цены на овощи и фрукты меняются в 2–4 раза в зависимости от сезона. Покупай то, что дёшево сейчас — питательная ценность одинакова.</p>
+  <div class="seasons"><div class="season">
+  <span class="season-icon">☀️</span>
+  <div class="season-name">Лето (июнь–август)</div>
+  <span class="season-label cheap">Дёшево сейчас</span>
+  <div class="season-item">Помидоры</div><div class="season-item">Огурцы</div><div class="season-item">Кабачки</div><div class="season-item">Перец</div><div class="season-item">Зелень</div><div class="season-item">Клубника</div><div class="season-item">Черешня</div><div class="season-item">Арбуз</div><div class="season-item">Персики</div><div class="season-item">Виноград</div>
+  <span class="season-label exp">Дорого / плохо</span>
+  <div class="season-item">Бананы (сезон без изменений)</div><div class="season-item">Любые тропические</div>
+  <div class="season-tip">🔄 Картошка → запечённые кабачки (20 мин, 200°C, растит. масло + паприка)</div>
+</div><div class="season">
+  <span class="season-icon">🍂</span>
+  <div class="season-name">Осень (сентябрь–ноябрь)</div>
+  <span class="season-label cheap">Дёшево сейчас</span>
+  <div class="season-item">Яблоки</div><div class="season-item">Груши</div><div class="season-item">Виноград</div><div class="season-item">Тыква*</div><div class="season-item">Капуста</div><div class="season-item">Морковь</div><div class="season-item">Свёкла</div><div class="season-item">Картофель новый</div>
+  <span class="season-label exp">Дорого / плохо</span>
+  <div class="season-item">Огурцы и помидоры (цена растёт)</div><div class="season-item">Клубника</div>
+  <div class="season-tip">🔄 Помидоры → тушёный болгарский перец или томатная паста в соусах</div>
+</div><div class="season">
+  <span class="season-icon">❄️</span>
+  <div class="season-name">Зима (декабрь–февраль)</div>
+  <span class="season-label cheap">Дёшево сейчас</span>
+  <div class="season-item">Капуста</div><div class="season-item">Морковь</div><div class="season-item">Свёкла</div><div class="season-item">Картофель</div><div class="season-item">Мандарины</div><div class="season-item">Замороженные ягоды</div><div class="season-item">Замороженная брокколи/цветная капуста</div>
+  <span class="season-label exp">Дорого / плохо</span>
+  <div class="season-item">Огурцы и помидоры (тепличные)</div><div class="season-item">Зелень (дорогая)</div><div class="season-item">Большинство фруктов</div>
+  <div class="season-tip">🔄 Свежий огурец → квашеная капуста (пробиотики + витамин C зимой)</div>
+</div><div class="season">
+  <span class="season-icon">🌱</span>
+  <div class="season-name">Весна (март–май)</div>
+  <span class="season-label cheap">Дёшево сейчас</span>
+  <div class="season-item">Капуста квашеная</div><div class="season-item">Морковь</div><div class="season-item">Картофель (прошлогодний)</div><div class="season-item">Редис (с апреля)</div><div class="season-item">Первая зелень (с апреля)</div>
+  <span class="season-label exp">Дорого / плохо</span>
+  <div class="season-item">Большинство овощей (межсезонье)</div><div class="season-item">Фрукты</div>
+  <div class="season-tip">🔄 Дорогие тепличные овощи → консервированная кукуруза + горошек в салаты</div>
+</div></div>
+</div>
+</section>
+<section id="supplements">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">12 / ДОБАВКИ</div>
+  <div class="sec-title">Что пить, а что <em>выбрасывать деньги</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Большинство спортпита — это маркетинг. Вот что реально работает при домашних тренировках и умеренном бюджете.</p>
+  <div class="supps"><div class="supp">
+  <div class="supp-badge green">РАБОТАЕТ</div>
+  <div class="supp-name">Креатин моногидрат</div>
+  <div class="supp-dose">3–5 г/день, каждый день</div>
+  <div class="supp-price">от 400 ₽ / мес</div>
+  <div class="supp-why">Единственная спортивная добавка с железными научными доказательствами. Увеличивает силу и выносливость на 10–15%, ускоряет восстановление. Эффект виден через 2–4 недели. Принимать ежедневно — даже в дни без тренировок.</div>
+  <div class="supp-where">Creatine Monohydrate от любого производителя (Optimum Nutrition, MyProtein, отечественный Лаборатория Силы). Форма только моногидрат.</div>
+</div><div class="supp">
+  <div class="supp-badge green">НУЖЕН</div>
+  <div class="supp-name">Витамин D3</div>
+  <div class="supp-dose">2000–4000 МЕ/день с едой</div>
+  <div class="supp-price">от 300 ₽ / 3 мес</div>
+  <div class="supp-why">Ростов — солнечный город, но при сидячей работе в офисе большинство россиян всё равно в дефиците. Витамин D влияет на тестостерон, иммунитет и настроение. Принимать с жирной едой (масло, яйца) — иначе не усваивается.</div>
+  <div class="supp-where">Аквадетрим, Детримакс, или любой D3 в масляных капсулах из аптеки.</div>
+</div><div class="supp">
+  <div class="supp-badge yellow">ПОЛЕЗЕН</div>
+  <div class="supp-name">Омега-3 (рыбий жир)</div>
+  <div class="supp-dose">1–2 г EPA+DHA в день</div>
+  <div class="supp-price">от 500 ₽ / мес</div>
+  <div class="supp-why">Снижает воспаление (важно при тренировках), улучшает работу сердца и мозга. Если ешь рыбу 3+ раз в неделю — не нужен. Если рыба редко — стоит принимать.</div>
+  <div class="supp-where">Омегапрайм, Now Foods Ultra Omega-3, или обычный аптечный рыбий жир (смотри содержание EPA+DHA на капсулу, а не «рыбьего жира»).</div>
+</div><div class="supp">
+  <div class="supp-badge yellow">ПОЛЕЗЕН</div>
+  <div class="supp-name">Магний B6</div>
+  <div class="supp-dose">300–400 мг магния/день</div>
+  <div class="supp-price">от 400 ₽ / мес</div>
+  <div class="supp-why">При стрессе, сидячей работе и нехватке энергии дефицит магния очень распространён. Улучшает качество сна, снижает тревожность, помогает мышцам расслабляться. Принимать вечером — улучшает сон.</div>
+  <div class="supp-where">Магне B6 (аптека), или Магний хелат из iHerb/спортивного магазина.</div>
+</div><div class="supp">
+  <div class="supp-badge yellow">НЕ ОБЯЗАТЕЛЕН</div>
+  <div class="supp-name">Протеиновый порошок (сывороточный)</div>
+  <div class="supp-dose">1 порция (25–30 г белка) при нехватке из еды</div>
+  <div class="supp-price">от 1500 ₽ / мес</div>
+  <div class="supp-why">При бюджете 3500 ₽/нед проще добрать белок из творога и яиц — это дешевле и вкуснее. Протеин нужен только если не получается набрать 120 г из еды. Если берёшь — Whey Isolate, без сахара и ароматизаторов.</div>
+  <div class="supp-where">MyProtein Impact Whey, Optimum Nutrition Gold Standard. Брать на распродажах.</div>
+</div><div class="supp">
+  <div class="supp-badge gray">НЕОБЯЗАТЕЛЬНО</div>
+  <div class="supp-name">Мультивитамины</div>
+  <div class="supp-dose">1 таблетка в день</div>
+  <div class="supp-price">от 300 ₽ / мес</div>
+  <div class="supp-why">При разнообразном питании по этому плану дефицита витаминов нет. Если рацион скудный или однообразный несколько месяцев — можно добавить. Не заменяют нормальное питание.</div>
+  <div class="supp-where">Алфавит спорт, Supradyn, любые аптечные.</div>
+</div><div class="supp">
+  <div class="supp-badge red">НЕ НУЖЕН</div>
+  <div class="supp-name">Предтренировочные комплексы</div>
+  <div class="supp-dose">—</div>
+  <div class="supp-price">1000–2000 ₽ / мес</div>
+  <div class="supp-why">Это по сути кофеин + красители + маркетинг. Те же 200 мг кофеина есть в 2 чашках кофе за 0 рублей. При домашних тренировках избыточная стимуляция ЦНС только мешает сну.</div>
+  <div class="supp-where">Не покупать.</div>
+</div><div class="supp">
+  <div class="supp-badge red">НЕ НУЖЕН</div>
+  <div class="supp-name">L-карнитин / жиросжигатели</div>
+  <div class="supp-dose">—</div>
+  <div class="supp-price">500–1500 ₽ / мес</div>
+  <div class="supp-why">Цель — набор массы, а не похудение. Жиросжигатели при твоей ситуации контрпродуктивны — они создают стрессовый отклик и мешают мышечному росту.</div>
+  <div class="supp-where">Не покупать.</div>
+</div></div>
+  <div style="margin-top:24px;border:1px solid var(--line)">
+    <div style="padding:14px 14px 10px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--acid);border-bottom:1px solid var(--line)">Приоритет инвестиций</div>
+    <div style="display:grid;grid-template-columns:90px 130px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.12em">1-й приоритет</span>
+  <strong style="color:var(--cream)">Еда и режим питания</strong>
+  <span style="color:var(--muted)">Без этого никакие добавки не работают</span>
+</div><div style="display:grid;grid-template-columns:90px 130px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.12em">2-й приоритет</span>
+  <strong style="color:var(--cream)">Сон 8 часов</strong>
+  <span style="color:var(--muted)">Важнее любой добавки</span>
+</div><div style="display:grid;grid-template-columns:90px 130px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.12em">3-й приоритет</span>
+  <strong style="color:var(--cream)">Тренировки 3×/нед</strong>
+  <span style="color:var(--muted)">Стимул для роста мышц</span>
+</div><div style="display:grid;grid-template-columns:90px 130px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.12em">4-й приоритет</span>
+  <strong style="color:var(--cream)">Витамин D3 + Креатин</strong>
+  <span style="color:var(--muted)">Реальный эффект за небольшие деньги</span>
+</div><div style="display:grid;grid-template-columns:90px 130px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.12em">5-й приоритет</span>
+  <strong style="color:var(--cream)">Омега-3 + Магний B6</strong>
+  <span style="color:var(--muted)">Если есть бюджет и нехватка рыбы / плохой сон</span>
+</div><div style="display:grid;grid-template-columns:90px 130px 1fr;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--acid);letter-spacing:.12em">6-й приоритет</span>
+  <strong style="color:var(--cream)">Протеин-порошок</strong>
+  <span style="color:var(--muted)">Только если не добираешь 120 г из еды</span>
+</div>
+  </div>
+</div>
+</section>
+<section id="progress">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">13 / ПРОГРЕСС</div>
+  <div class="sec-title">По месяцам <em>что ожидать</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Тело адаптируется — нормы нужно пересматривать каждые 2–3 кг прибавки. <strong>+4 кг за 6 месяцев — реальная цель при домашних тренировках.</strong></p>
+  <div class="progress-months"><div class="prog-month">
+  <div class="prog-num">Месяц 1</div>
+  <div class="prog-weight">+0.5–1 кг</div>
+  <div class="prog-focus">Привычки</div>
+  <span class="prog-label">Питание</span>
+  <div class="prog-item">Перейти с 1 на 3 приёма пищи</div><div class="prog-item">Каждый день творог или кефир</div><div class="prog-item">Держать 2500 ккал / 120 г белка</div>
+  <span class="prog-label">Тренировки</span>
+  <div class="prog-item">Освоить технику 6 упражнений</div><div class="prog-item">3 тренировки в неделю по 30 мин</div><div class="prog-item">2.5 кг, 3×12–15 повторений</div>
+  <div class="prog-milestone">Первый месяц — самый важный. Цель не вес, а сформировать привычку есть 3 раза.</div>
+</div><div class="prog-month">
+  <div class="prog-num">Месяц 2</div>
+  <div class="prog-weight">+0.8–1.5 кг</div>
+  <div class="prog-focus">Прогрессия</div>
+  <span class="prog-label">Питание</span>
+  <div class="prog-item">Контейнер с обедом на работу 3–4 раза в неделю</div><div class="prog-item">Batch cooking по воскресеньям</div><div class="prog-item">Ввести кефир перед сном</div>
+  <span class="prog-label">Тренировки</span>
+  <div class="prog-item">Увеличить повторения до 20–25</div><div class="prog-item">Добавить суперсеты</div><div class="prog-item">Оценить — нужна ли гантеля потяжелее</div>
+  <div class="prog-milestone">Должна появиться лёгкая крепатура после тренировок — это признак роста.</div>
+</div><div class="prog-month">
+  <div class="prog-num">Месяц 3</div>
+  <div class="prog-weight">+1–2 кг</div>
+  <div class="prog-focus">Апгрейд</div>
+  <span class="prog-label">Питание</span>
+  <div class="prog-item">Скорректировать калории если прибавка меньше 1 кг (+100–150 ккал)</div><div class="prog-item">Попробовать ввести 4-й приём</div><div class="prog-item">Оценить нужен ли витамин D / креатин</div>
+  <span class="prog-label">Тренировки</span>
+  <div class="prog-item">Купить гантели 5–8 кг</div><div class="prog-item">Вернуться к 3×12 с новым весом</div><div class="prog-item">Добавить негативные повторения (медленный спуск)</div>
+  <div class="prog-milestone">К этому моменту должны появиться визуальные изменения — рельеф плеч и рук.</div>
+</div><div class="prog-month">
+  <div class="prog-num">Месяц 4–6</div>
+  <div class="prog-weight">+2–4 кг итого</div>
+  <div class="prog-focus">Масштабирование</div>
+  <span class="prog-label">Питание</span>
+  <div class="prog-item">Пересчитать нормы по новому весу (каждые 2 кг)</div><div class="prog-item">Если вес +4 кг → пересчитать: вес × 1.8 г = новый белок</div><div class="prog-item">Рассмотреть переход к сплиту питания (тренировки vs отдых)</div>
+  <span class="prog-label">Тренировки</span>
+  <div class="prog-item">Разборные гантели 10–15 кг</div><div class="prog-item">Рассмотреть турник / зал</div><div class="prog-item">Добавить 4-ю тренировку (или сплит верх/низ)</div>
+  <div class="prog-milestone">+4 кг за 6 месяцев — это реальная цель. При наборе без зала это хороший результат.</div>
+</div></div>
+  <div class="info-box" style="margin-top:20px"><p>Пересчитывай нормы каждые 2–3 кг прибавки. При весе 68 кг: белок → 68×1.8 = 122 г, калории → ~2600 ккал. При весе 72 кг: белок → 130 г, калории → ~2700 ккал.</p></div>
+</div>
+</section>
+<section id="veggies">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">14 / FRUITS &amp; VEG</div>
+  <div class="sec-title">Овощи и <em>фрукты</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Без овощей и фруктов набор массы превращается в набор жира и проблем с ЖКТ. <strong>Цель — 400–500 г в день: 2–3 фрукта + 2 порции овощей.</strong></p>
+  <div class="veggies-grid"><div class="veggie">
+  <span class="veggie-icon">🍌</span>
+  <div class="veggie-name">Банан</div>
+  <div class="veggie-kcal">~90 ккал · 23 г угл.</div>
+  <div class="veggie-why"><strong>зачем</strong>Быстрая энергия + калий для мышц. Идеально в кашу, к творогу, в шейк. 7–10 штук на неделю.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🍎</span>
+  <div class="veggie-name">Яблоко</div>
+  <div class="veggie-kcal">~50 ккал · клетчатка</div>
+  <div class="veggie-why"><strong>зачем</strong>Клетчатка для пищеварения при больших объёмах еды. На работу — спасает от голода.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🍐</span>
+  <div class="veggie-name">Груша</div>
+  <div class="veggie-kcal">~57 ккал · сладкая</div>
+  <div class="veggie-why"><strong>зачем</strong>Мягче желудку, чем яблоко. К творогу или перекусу. Калий + клетчатка.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🥝</span>
+  <div class="veggie-name">Киви</div>
+  <div class="veggie-kcal">~60 ккал · вит. C</div>
+  <div class="veggie-why"><strong>зачем</strong>В 1 киви витамина C больше, чем в апельсине. Помогает усваивать железо из мяса.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🍊</span>
+  <div class="veggie-name">Апельсин</div>
+  <div class="veggie-kcal">~45 ккал · цитрус</div>
+  <div class="veggie-why"><strong>зачем</strong>Иммунитет, бодрость. Лучше как целый фрукт — сохраняется клетчатка.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🍇</span>
+  <div class="veggie-name">Виноград</div>
+  <div class="veggie-kcal">~70 ккал · быстрые угл.</div>
+  <div class="veggie-why"><strong>зачем</strong>Калорийный фрукт — отлично для набора. Горсть = +100 ккал без усилий.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🍓</span>
+  <div class="veggie-name">Ягоды (сезонно)</div>
+  <div class="veggie-kcal">~45 ккал · антиоксид.</div>
+  <div class="veggie-why"><strong>зачем</strong>Летом свежие, зимой замороженные (дёшево). В йогурт или творог.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🥒</span>
+  <div class="veggie-name">Огурец</div>
+  <div class="veggie-kcal">~15 ккал · вода</div>
+  <div class="veggie-why"><strong>зачем</strong>База любого салата. Хрусткость к плотному обеду. Необходим для пищеварения.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🍅</span>
+  <div class="veggie-name">Помидор</div>
+  <div class="veggie-kcal">~20 ккал · ликопин</div>
+  <div class="veggie-why"><strong>зачем</strong>Ликопин лучше усваивается при тепловой обработке — томатная паста тоже считается.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🥕</span>
+  <div class="veggie-name">Морковь</div>
+  <div class="veggie-kcal">~35 ккал · бета-каротин</div>
+  <div class="veggie-why"><strong>зачем</strong>Витамин A. Сырой в салат, в плов, к рыбе. Дешёвая и универсальная.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🌶️</span>
+  <div class="veggie-name">Болгарский перец</div>
+  <div class="veggie-kcal">~30 ккал · вит. C</div>
+  <div class="veggie-why"><strong>зачем</strong>Витамина C больше, чем в апельсине. Красный — самый полезный.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🥦</span>
+  <div class="veggie-name">Брокколи / цв. капуста</div>
+  <div class="veggie-kcal">~35 ккал · витамины</div>
+  <div class="veggie-why"><strong>зачем</strong>Замороженная дёшево. В кипяток на 5 мин + масло — готовый гарнир.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🥬</span>
+  <div class="veggie-name">Капуста</div>
+  <div class="veggie-kcal">~25 ккал · клетчатка</div>
+  <div class="veggie-why"><strong>зачем</strong>Самый дешёвый овощ. В салат с маслом. Кладезь клетчатки и витамина K.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🌿</span>
+  <div class="veggie-name">Зелень (укроп, петрушка)</div>
+  <div class="veggie-kcal">~30 ккал · железо</div>
+  <div class="veggie-why"><strong>зачем</strong>Пучок на неделю — 30 ₽. Горстями в любое блюдо — витамины + вид.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🥔</span>
+  <div class="veggie-name">Картофель</div>
+  <div class="veggie-kcal">~80 ккал · крахмал</div>
+  <div class="veggie-why"><strong>зачем</strong>Технически овощ, фактически — углеводный гарнир. Калий, витамин C.</div>
+</div><div class="veggie">
+  <span class="veggie-icon">🧄</span>
+  <div class="veggie-name">Чеснок</div>
+  <div class="veggie-kcal">~5 ккал / зубчик</div>
+  <div class="veggie-why"><strong>зачем</strong>Аромат блюдам. Аллицин — природный антибиотик. 1–2 зубчика в блюдо.</div>
+</div></div>
+  <div class="info-box green" style="margin-top:20px">
+    <p><strong>2–3 правило:</strong> 2 фрукта в день (утром в кашу, в перекус) + 2 порции овощей (обед, ужин). Минимум 400 г. Замороженные овощи и ягоды не хуже свежих по составу и стоят дешевле.</p>
+  </div>
+</div>
+</section>
+<section>
+<div class="sec-head fade-up d1">
+  <div class="sec-num">15 / RULES</div>
+  <div class="sec-title">Как есть <em>правильно</em></div>
+</div>
+<div class="sec-wrap">
+  <div class="advice-grid">
+    <div class="advice-main">
+      <h3>Простыми словами</h3>
+      <p><strong>Про 1 приём.</strong> Ты ешь 1 раз в день — это главная проблема. При таком режиме организм голодает, тестостерон падает, кортизол растёт, а мышцы не строятся вообще. <strong>Набрать массу при 1 приёме практически невозможно.</strong> Нужно минимум 3 приёма — даже если они небольшие и без готовки.</p><p><strong>Быстрые приёмы без готовки.</strong> Ты любишь молочку и орехи — это идеальные быстрые приёмы. Творог + мёд + орехи — это 400–500 ккал и 30 г белка за 1 минуту. Кефир + хлеб + сыр + банан = ещё 500 ккал. Держи эти продукты дома всегда — это страховка от пропусков.</p><p><strong>Про энергию.</strong> «Провалы» энергии в течение дня — прямое следствие 1 приёма пищи. Мозг буквально не получает топливо. 3–4 приёма = стабильный уровень глюкозы = стабильная энергия без кофеиновых костылей. Кофе пей после завтрака, не натощак — на голодный желудок он даёт спайк и потом резкий спад.</p><p><strong>Тренировки + питание.</strong> С гантелей и упражнениями с собственным весом — отличный старт. <strong>Сначала освой технику с 2.5 кг, потом увеличивай повторения до 20–25,</strong> затем докупи 5–8 кг. Тренировки 3 раза в неделю по 30–40 мин + правильное питание = результат через 6–8 недель.</p>
+    </div>
+    <div class="advice-side">
+      <h3>5 ОШИБОК,<br>которые сорвут<br>результат</h3>
+      <div class="mistake">
+  <div class="mistake-num">01</div>
+  <div class="mistake-text"><strong>1 приём пищи в день</strong>Это главная ошибка. Мышцы строятся только при регулярном поступлении белка. Минимум 3 приёма.</div>
+</div><div class="mistake">
+  <div class="mistake-num">02</div>
+  <div class="mistake-text"><strong>Мало белка</strong>Если в дне нет 120 г белка — вес растёт жиром, не мышцами. Считай хотя бы первые 2 недели.</div>
+</div><div class="mistake">
+  <div class="mistake-num">03</div>
+  <div class="mistake-text"><strong>«Чистая» еда без калорий</strong>Огурец и куриная грудка не дадут набор. Нужны крупы, хлеб, масло, орехи, молочка.</div>
+</div><div class="mistake">
+  <div class="mistake-num">04</div>
+  <div class="mistake-text"><strong>Нет режима</strong>Хаотичная еда = желудок не привыкает, аппетит плавает. Ешь в одно и то же время.</div>
+</div><div class="mistake">
+  <div class="mistake-num">05</div>
+  <div class="mistake-text"><strong>Застрял на 2.5 кг навсегда</strong>Без прогрессии нагрузки мышцы не растут. Через 6–8 недель нужно увеличивать вес или повторения.</div>
+</div>
+    </div>
+  </div>
+</div>
+</section>
+<section id="shops">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">16 / SHOPS</div>
+  <div class="sec-title">Где покупать <em>рядом с Балакирева</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text"><strong>Агрокомплекс на Тренева, 3А</strong> — ~5 мин от Радиорынка — лучшая молочка и мясо района. Крупы, консервы, бакалея — в Пятёрочке/Магните рядом.</p>
+  <div class="shops-grid"><div class="shop featured">
+  <div class="shop-head">
+    <div>
+      <div class="shop-badge">ближайший · ~5 мин</div>
+      <div class="shop-name">Агрокомплекс Выселковский <span class="star">★</span></div>
+    </div>
+    <div class="shop-rank"><span class="rank">3.9</span>рейтинг</div>
+  </div>
+  <div class="shop-addr"><strong>ул. Тренева, 3А — рядом с Радиорынком</strong>Пн-вс: 8:00–20:00 · 8-800-250-06-90</div>
+  <div class="shop-pros"><strong>Плюсы для твоей цели</strong>Лучшая молочка района — творог, кефир, молоко краснодарского производства. Свежее местное мясо и птица. Отличные яйца С0/С1. Хлеб собственной выпечки. Заходи по дороге с работы.</div>
+  <div class="shop-cons"><strong>Минусы</strong>Закрывается в 20:00 — не успеешь при задержке. Проверяй чек на кассе.</div>
+</div><div class="shop featured">
+  <div class="shop-head">
+    <div>
+      <div class="shop-badge">ежедневно</div>
+      <div class="shop-name">Пятёрочка <span class="star">★</span></div>
+    </div>
+    <div class="shop-rank"><span class="rank">4.1</span>рейтинг</div>
+  </div>
+  <div class="shop-addr"><strong>2-я Баррикадная ул., 4 — ближайшая к Радиорынку</strong>Пн-вс: 8:00–22:00 · 8-800-555-55-05</div>
+  <div class="shop-pros"><strong>Плюсы для твоей цели</strong>Ближайшая к Балакирева. Хлеб, фрукты, молоко, кефир, мелочи. Акции 2+1 на бананы. По дороге домой.</div>
+  <div class="shop-cons"><strong>Минусы</strong>Мясо и рыбу брать с осторожностью — проверяй дату. Иногда один кассир в час пик.</div>
+</div><div class="shop">
+  <div class="shop-head">
+    <div>
+      <div class="shop-badge">круглосуточно</div>
+      <div class="shop-name">Пятёрочка (круглосуточная)</div>
+    </div>
+    <div class="shop-rank"><span class="rank">3.8</span>рейтинг</div>
+  </div>
+  <div class="shop-addr"><strong>Спартаковская ул., 26 — ~7 мин пешком</strong>Круглосуточно, 7 дней</div>
+  <div class="shop-pros"><strong>Плюсы для твоей цели</strong>Единственный круглосуточный поблизости. Выручает вечером после 22:00 и ранним утром.</div>
+  <div class="shop-cons"><strong>Минусы</strong>Отзывы неоднозначные — цены иногда расходятся с ценниками. Проверяй чек.</div>
+</div><div class="shop">
+  <div class="shop-head">
+    <div>
+      <div class="shop-badge">орехи / консервы</div>
+      <div class="shop-name">Магнит</div>
+    </div>
+    <div class="shop-rank"><span class="rank">4.1</span>рейтинг</div>
+  </div>
+  <div class="shop-addr"><strong>просп. Ставского, 3/14 — ~12 мин пешком</strong>Пн-вс: 7:30–21:30</div>
+  <div class="shop-pros"><strong>Плюсы для твоей цели</strong>Лучшие цены на арахис, орехи и тунец в районе. Дешёвые крупы под СТМ. Акции на молочку — следи через приложение.</div>
+  <div class="shop-cons"><strong>Минусы</strong>Нестабильное качество мяса. Проверяй цены на кассе.</div>
+</div></div>
+  <div class="strategy-box">
+    <span class="s-label">Стратегия закупки</span>
+    <div><b style="color:var(--acid)">Ежедневно (по дороге домой):</b> Пятёрочка на 2-й Баррикадной — хлеб, фрукты, молоко, кефир.</div><div><b style="color:var(--acid)">2–3 раза в неделю:</b> Агрокомплекс на Тренева, 3А — мясо, творог, яйца, молочка.</div><div><b style="color:var(--acid)">Раз в неделю:</b> Магнит на Ставского — орехи, тунец, крупы по акции.</div><div><b style="color:var(--acid)">После 22:00 или рано утром:</b> Пятёрочка на Спартаковской (круглосуточно).</div>
+  </div>
+  <div class="brands"><div class="brand">
+  <div class="brand-cat">Молочка · Творог · Кефир</div>
+  <div class="brand-item"><b>Агрокомплекс Выселковский</b> — краснодарская молочка, лучший выбор в районе</div><div class="brand-item"><b>Простоквашино</b> — надёжный выбор везде, есть в любом магазине</div><div class="brand-item"><b>Савушкин</b> — творог 5% — хорошее соотношение цена/белок</div><div class="brand-item"><b>Домик в деревне</b> — зернистый творог, хорош для десертов</div>
+  <div class="brand-note">В составе творога — только молоко и закваска. «Творожный продукт» с растительным жиром — не берём.</div>
+</div><div class="brand">
+  <div class="brand-cat">Мясо · Птица · Фарш</div>
+  <div class="brand-item"><b>Агрокомплекс Выселковский</b> — местная курица, говяжий фарш — самый свежий в районе</div><div class="brand-item"><b>Черкизово</b> — куриное филе, стабильное качество в любом магазине</div><div class="brand-item"><b>Приосколье</b> — хорошее соотношение цена/качество на бёдра</div><div class="brand-item"><b>Развесное мясо</b> — бери на развес, не в лотках с маринадом</div>
+  <div class="brand-note">Куриное бедро лучше брать без кожи и кости — платишь только за мясо.</div>
+</div><div class="brand">
+  <div class="brand-cat">Рыба · Консервы</div>
+  <div class="brand-item"><b>Минтай/хек развесной (Агрокомплекс)</b> — свежемороженый на развес дешевле упакованного</div><div class="brand-item"><b>Тунец Bonito в собств. соку</b> — нет лишних добавок, в Магните часто по акции</div><div class="brand-item"><b>Тунец «Капитан Вкусов»</b> — бюджетный вариант, состав чистый</div>
+  <div class="brand-note">Тунец только «в собственном соку» — вдвое меньше калорий чем в масле при том же белке.</div>
+</div><div class="brand">
+  <div class="brand-cat">Яйца</div>
+  <div class="brand-item"><b>Агрокомплекс Выселковский</b> — фермерские С0/С1, жёлток ярче — больше витаминов</div><div class="brand-item"><b>Роскар</b> — стабильное качество везде, С1</div><div class="brand-item"><b>Любой местный колхоз</b> — ищи в Агрокомплексе или на рынке</div>
+  <div class="brand-note">С0 и С1 — самые крупные (1 яйцо = 7–8 г белка). С2 мелкие — менее выгодны.</div>
+</div><div class="brand">
+  <div class="brand-cat">Крупы · Хлопья · Макароны</div>
+  <div class="brand-item"><b>Националь</b> — рис, греча, все крупы — стабильное качество</div><div class="brand-item"><b>Увелка</b> — пшено, ржаные хлопья для гранолы</div><div class="brand-item"><b>Макфа / Pasta Zara</b> — макароны из твёрдой пшеницы (durum) — обязательно!</div>
+  <div class="brand-note">Макароны только из твёрдой пшеницы — не развариваются и дают медленные углеводы.</div>
+</div><div class="brand">
+  <div class="brand-cat">Масло · Орехи · Паста</div>
+  <div class="brand-item"><b>Вологодское / Простоквашино</b> — сливочное масло 82.5% жирности</div><div class="brand-item"><b>Слобода / Золотая семечка</b> — подсолнечное рафинированное для жарки</div><div class="brand-item"><b>Kite / Mr.Djemius</b> — арахисовая паста — только арахис+соль в составе</div><div class="brand-item"><b>СТМ Пятёрочки или Магнита</b> — орехи навалом — выгоднее фасованных брендов</div>
+  <div class="brand-note">Арахисовая паста: в составе «арахис» или «арахис, соль». Сахар и пальмовое масло — не берём.</div>
+</div><div class="brand">
+  <div class="brand-cat">Сыр · Сметана · Йогурт</div>
+  <div class="brand-item"><b>Брест-Литовск / Радость вкуса</b> — недорого, хорошо плавится</div><div class="brand-item"><b>Агрокомплекс / Простоквашино</b> — сметана без крахмала и загустителей</div><div class="brand-item"><b>Активиа натуральная / Bio-Баланс</b> — йогурт с минимумом сахара</div>
+  <div class="brand-note">В сметане не должно быть крахмала и загустителей. Жирность 15–20% — оптимально.</div>
+</div><div class="brand">
+  <div class="brand-cat">Хлеб · Хлебцы</div>
+  <div class="brand-item"><b>Агрокомплекс (собственная выпечка)</b> — свежий, без лишних добавок</div><div class="brand-item"><b>Dr.Korner / Finn Crisp</b> — ржаные хлебцы, минимальный состав</div><div class="brand-item"><b>Fazer / Хлебный дом</b> — тост-хлеб для сэндвичей и завтраков</div>
+  <div class="brand-note">Первым в составе хлеба — мука пшеничная или ржаная. Маргарин в начале списка — не берём.</div>
+</div></div>
+</div>
+</section>
+<section id="budget">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">17 / BUDGET</div>
+  <div class="sec-title">Список покупок <em>на неделю</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text" style="margin-bottom:28px">
+    Полная закупка на 7 дней включая специи. 
+    <strong>Базовая еженедельная</strong> (без специй и масла подсолнечного) — ≈ 3 400–3 600 ₽.<br>
+    Специи и масло покупаются раз в месяц — их цена размазывается на 4 недели.
+  </p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);margin-bottom:4px"><div style="border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 20px;background:var(--bg-2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">🥩 Мясо и рыба</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid)">1250 ₽</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Куриное филе/бёдра 1.5 кг</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">420 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Фарш говяжий 0.5 кг</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">280 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Минтай/треска (развес) 0.5 кг</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">210 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Тунец в собств. соку × 2 банки</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">180 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Сосиски от 60% мяса, 4 шт</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">160 ₽</span>
+    </div>
+  </div><div style="border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 20px;background:var(--bg-2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">🥛 Молочка и яйца</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid)">1250 ₽</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Яйца С0/С1, 20 шт</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">200 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Творог 5%, 1 кг</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">290 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Молоко 2.5%, 2 л</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">180 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Кефир 1%, 2 × 500 мл</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">140 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Йогурт натуральный, 500 мл</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">120 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Сыр твёрдый, 250 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">240 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Сметана 15%, 200 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">80 ₽</span>
+    </div>
+  </div><div style="border-bottom:1px solid var(--line);padding:18px 20px;background:var(--bg-2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">🌾 Крупы и хлеб</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid)">530 ₽</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Гречка, рис, пшено (по 500 г)</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">205 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Ржаные хлопья (гранола), 400 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">110 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Макароны из тв. пшеницы, 500 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">75 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Хлеб + хлебцы Dr.Korner</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">140 ₽</span>
+    </div>
+  </div><div style="border-right:1px solid var(--line);padding:18px 20px;background:var(--bg-2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">🥕 Овощи</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid)">630 ₽</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Картофель, 2 кг</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">100 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Морковь, 1 кг</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">50 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Огурцы, 500 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">80 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Помидоры, 500 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">100 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Болгарский перец, 3 шт</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">80 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Капуста / зелень</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">70 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Чеснок, лимон</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">80 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Морковь по-корейски, 200 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">70 ₽</span>
+    </div>
+  </div><div style="border-right:1px solid var(--line);padding:18px 20px;background:var(--bg-2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">🍌 Фрукты</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid)">290 ₽</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Бананы, яблоки, груши</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">290 ₽</span>
+    </div>
+  </div><div style="padding:18px 20px;background:var(--bg-2)">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)">🫙 Масло, орехи, специи</span>
+      <span style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--acid)">860 ₽</span>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Масло сливочное 82.5%, 200 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">130 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Масло подсолнечное, 1 л</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">120 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Арахис жареный, 200 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">90 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Грецкие орехи, 150 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">110 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Мёд, 250 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">120 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Изюм, 200 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">70 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Томатная паста, 2 × 70 г</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">55 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Соевый соус, 150 мл</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">75 ₽</span>
+    </div><div style="display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;border-bottom:1px dashed var(--line)">
+      <span style="font-size:13px;color:var(--ink)">Специи (паприка, орегано, зира, корица)</span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--acid);margin-left:8px;white-space:nowrap">90 ₽</span>
+    </div>
+  </div></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;padding:16px 20px;background:var(--bg-2);border:1px solid var(--line);border-top:none">
+    <span style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)">ИТОГО (полная закупка)</span>
+    <span style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--acid)">4810 ₽</span>
+  </div>
+</div>
+</section>
+
+<section id="shopping">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">18 / SHOPPING</div>
+  <div class="sec-title">Чек-лист <em>покупок</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Открывай в телефоне в магазине. Нажимай на продукт — вычёркивается. Видишь сколько осталось потратить. <strong>40 позиций · ~4860 ₽</strong> — полная закупка на неделю включая специи.</p>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:20px">
+    <input id="sh-search" type="text" placeholder="🔍  Поиск продукта..." oninput="shFilter()"
+      style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);padding:9px 14px;outline:none;flex:1;min-width:180px">
+    <select id="sh-shop" onchange="shFilter()"
+      style="font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);padding:9px 14px;outline:none;cursor:pointer">
+      <option value="">Все магазины</option><option value="Агрокомплекс">Агрокомплекс</option><option value="Активиа">Активиа</option><option value="Брест-Литовск">Брест-Литовск</option><option value="Вологодское">Вологодское</option><option value="Лента СТМ">Лента СТМ</option><option value="Магнит">Магнит</option><option value="Макфа">Макфа</option><option value="Националь">Националь</option><option value="Простоквашино">Простоквашино</option><option value="Пятёрочка">Пятёрочка</option><option value="Слобода">Слобода</option><option value="Увелка">Увелка</option><option value="Черкизово">Черкизово</option>
+    </select>
+    <button onclick="shReset()" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:transparent;border:1px solid var(--line);color:var(--muted);padding:9px 14px;cursor:pointer">↺ Сбросить</button>
+    <button onclick="window.print()" style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--acid);border:none;color:var(--bg);padding:9px 14px;cursor:pointer">🖨 Печать</button>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px"><button class="cat-btn cat-active" data-cat="all" onclick="shFilterCat('all')">Все</button><button class="cat-btn" data-cat="meat" onclick="shFilterCat('meat')"><span style="width:8px;height:8px;border-radius:50%;background:#ff5c2a;display:inline-block;margin-right:6px"></span>Мясо/рыба</button><button class="cat-btn" data-cat="dairy" onclick="shFilterCat('dairy')"><span style="width:8px;height:8px;border-radius:50%;background:#5fb3d9;display:inline-block;margin-right:6px"></span>Молочка</button><button class="cat-btn" data-cat="grains" onclick="shFilterCat('grains')"><span style="width:8px;height:8px;border-radius:50%;background:#e5b13d;display:inline-block;margin-right:6px"></span>Крупы/хлеб</button><button class="cat-btn" data-cat="veg" onclick="shFilterCat('veg')"><span style="width:8px;height:8px;border-radius:50%;background:#6fbf60;display:inline-block;margin-right:6px"></span>Овощи</button><button class="cat-btn" data-cat="fruit" onclick="shFilterCat('fruit')"><span style="width:8px;height:8px;border-radius:50%;background:#d6ff3d;display:inline-block;margin-right:6px"></span>Фрукты</button><button class="cat-btn" data-cat="extras" onclick="shFilterCat('extras')"><span style="width:8px;height:8px;border-radius:50%;background:#8a8576;display:inline-block;margin-right:6px"></span>Масло/орехи/специи</button></div>
+
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--line);margin-bottom:20px">
+    <div style="padding:14px 18px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Осталось купить</div>
+      <div id="sh-left" style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--acid)">40 <span style="font-size:13px;color:var(--muted)">позиций</span></div>
+    </div>
+    <div style="padding:14px 18px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Куплено</div>
+      <div id="sh-done" style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--green)">0 <span style="font-size:13px;color:var(--muted)">позиций</span></div>
+    </div>
+    <div style="padding:14px 18px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Потрачено</div>
+      <div id="sh-spent" style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--rust)">0 <span style="font-size:13px;color:var(--muted)">₽</span></div>
+    </div>
+    <div style="padding:14px 18px;background:var(--bg-2)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Осталось</div>
+      <div id="sh-rem" style="font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--acid)">4860 <span style="font-size:13px;color:var(--muted)">₽</span></div>
+    </div>
+  </div>
+
+  <div id="sh-list" style="border:1px solid var(--line)"></div>
+
+  <div style="margin-top:12px;padding:10px 16px;background:var(--bg-2);border:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);line-height:1.7">
+    <span style="color:var(--acid)">Специи и масло</span> — покупаются один раз, хватает на месяц.
+    <span style="color:var(--acid)">Базовая еженедельная закупка</span> (без специй и масла подсолнечного) ≈ 3400–3600 ₽.
+  </div>
+</div>
+
+<style>
+.cat-btn{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--bg-2);border:1px solid var(--line);color:var(--muted);padding:7px 14px;cursor:pointer;display:inline-flex;align-items:center;transition:all .2s}
+.cat-btn:hover,.cat-active{border-color:var(--acid);color:var(--acid);background:rgba(214,255,61,.08)}
+.sh-row{display:grid;grid-template-columns:40px 1fr auto auto;align-items:center;border-bottom:1px solid var(--line);cursor:pointer;transition:background .15s}
+.sh-row:last-child{border-bottom:none}
+.sh-row:hover{background:var(--bg-2)}
+.sh-row.bought{opacity:.5}
+.sh-row.bought .sh-nm{text-decoration:line-through;color:var(--muted)}
+.sh-row.hidden{display:none}
+.sh-chk{display:flex;align-items:center;justify-content:center;border-right:1px solid var(--line);padding:14px 0;font-size:16px;color:var(--muted)}
+.sh-row.bought .sh-chk{color:var(--green)}
+.sh-nm{padding:11px 16px;font-size:14px;color:var(--ink)}
+.sh-tag{display:block;font-family:'JetBrains Mono',monospace;font-size:8px;color:var(--muted);margin-top:2px}
+.sh-qty{padding:11px 10px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap}
+.sh-pr{padding:11px 16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--acid);white-space:nowrap;border-left:1px solid var(--line)}
+.sh-row.bought .sh-pr{color:var(--green)}
+.sh-sep{padding:7px 16px;background:var(--bg-2);border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+</style>
+
+<script src="shopping.js"></script>
+</section>
+
+<!-- ===== WEIGHT TRACKER ===== -->
+<section id="weight-tracker">
+<div class="sec-head fade-up d1">
+  <div class="sec-num">19 / ВЕСТ-ТРЕКЕР</div>
+  <div class="sec-title">График <em>прогресса</em></div>
+</div>
+<div class="sec-wrap">
+  <p class="intro-text">Записывай вес раз в неделю — в одно и то же время, утром, натощак. <strong>Без графика не видишь работает ли план.</strong> Норма прибавки: +300–500 г/нед.</p>
+
+  <!-- Input area -->
+  <div style="display:grid;grid-template-columns:1fr 1fr auto auto;gap:10px;align-items:end;margin-bottom:24px">
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Дата</div>
+      <input type="date" id="wt-date"
+        style="width:100%;font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);padding:10px 12px;outline:none">
+    </div>
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Вес (кг)</div>
+      <input type="number" id="wt-kg" placeholder="64.0" step="0.1" min="40" max="200"
+        style="width:100%;font-family:'JetBrains Mono',monospace;font-size:12px;background:var(--bg-2);border:1px solid var(--line);color:var(--ink);padding:10px 12px;outline:none"
+        onkeydown="if(event.key==='Enter')addWeight()">
+    </div>
+    <button onclick="addWeight()"
+      style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:var(--acid);border:none;color:var(--bg);padding:10px 18px;cursor:pointer;align-self:flex-end;white-space:nowrap">
+      + Добавить
+    </button>
+    <button onclick="resetWeight()"
+      style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;background:transparent;border:1px solid var(--line);color:var(--muted);padding:10px 18px;cursor:pointer;align-self:flex-end;white-space:nowrap">
+      ↺ Сброс
+    </button>
+  </div>
+
+  <!-- Stats row -->
+  <div id="wt-stats" style="display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid var(--line);margin-bottom:24px">
+    <div style="padding:14px 16px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Стартовый</div>
+      <div id="wt-start" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--cream)">—</div>
+    </div>
+    <div style="padding:14px 16px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Текущий</div>
+      <div id="wt-current" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--acid)">—</div>
+    </div>
+    <div style="padding:14px 16px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Прибавка</div>
+      <div id="wt-gained" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green)">—</div>
+    </div>
+    <div style="padding:14px 16px;background:var(--bg-2);border-right:1px solid var(--line)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">Темп/нед</div>
+      <div id="wt-rate" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--cream)">—</div>
+    </div>
+    <div style="padding:14px 16px;background:var(--bg-2)">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:5px">До цели (74 кг)</div>
+      <div id="wt-to-goal" style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--muted)">—</div>
+    </div>
+  </div>
+
+  <!-- Chart -->
+  <div style="background:var(--bg-2);border:1px solid var(--line);padding:20px;margin-bottom:24px;position:relative">
+    <div id="wt-no-data"
+      style="text-align:center;padding:48px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.14em">
+      Добавь первую запись — здесь появится график
+    </div>
+    <canvas id="wt-chart" style="display:none;max-height:280px"></canvas>
+  </div>
+
+  <!-- Log table -->
+  <div id="wt-log-wrap" style="display:none;border:1px solid var(--line)">
+    <div style="padding:10px 16px;background:var(--bg-2);border-bottom:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:grid;grid-template-columns:1fr 80px 80px 80px 36px;gap:8px">
+      <span>Дата</span><span>Вес</span><span>Δ к пред.</span><span>Δ к старту</span><span></span>
+    </div>
+    <div id="wt-log"></div>
+  </div>
+
+  <!-- Status message -->
+  <div id="wt-status" style="margin-top:16px;padding:12px 18px;background:rgba(214,255,61,.06);border-left:3px solid var(--acid);font-size:13px;color:var(--cream);line-height:1.5;display:none"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+(function(){
+  const GOAL = 74;
+  const START_WEIGHT = 64;
+  let records = JSON.parse(localStorage.getItem('wt_records')||'[]');
+  let chart = null;
+
+  // Установим сегодняшнюю дату по умолчанию
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('wt-date').value = today;
+
+  function save() { localStorage.setItem('wt_records', JSON.stringify(records)); }
+
+  function fmtDate(d) {
+    const parts = d.split('-');
+    return `${parts[2]}.${parts[1]}`;
+  }
+
+  function getStatus(rate) {
+    if (rate === null) return null;
+    if (rate < 0) return { color: 'var(--rust)', msg: `Вес падает (${rate > -0.05 ? 'незначительно' : 'заметно'}). Добавь 200–300 ккал в день — скорее всего не добираешь норму или много тратишь.` };
+    if (rate < 0.1) return { color: 'var(--muted)', msg: `Темп очень низкий (${rate.toFixed(2)} г/нед). Проверь: считаешь ли калории? Все 3 приёма? Добавь 150–200 ккал/день.` };
+    if (rate <= 0.5) return { color: 'var(--green)', msg: `✓ Хороший темп: +${rate.toFixed(2)} кг/нед. Это именно то что нужно — медленный набор с минимумом жира. Продолжай в том же духе.` };
+    if (rate <= 0.8) return { color: 'var(--gold)', msg: `Темп высокий: +${rate.toFixed(2)} кг/нед. Набор идёт быстро — часть может идти в жир. Убавь на 100–150 ккал/день.` };
+    return { color: 'var(--rust)', msg: `Темп слишком быстрый: +${rate.toFixed(2)} кг/нед — большая часть пойдёт в жир. Убавь на 200–300 ккал/день.` };
+  }
+
+  function render() {
+    const sorted = [...records].sort((a,b) => a.date.localeCompare(b.date));
+    const n = sorted.length;
+
+    // Stats
+    if (n >= 1) {
+      const first = sorted[0].kg;
+      const last = sorted[n-1].kg;
+      const gained = (last - first);
+      const weeks = n > 1 ? ((new Date(sorted[n-1].date) - new Date(sorted[0].date)) / 86400000 / 7) : 0;
+      const rate = weeks > 0 ? gained / weeks : null;
+      const toGoal = GOAL - last;
+
+      document.getElementById('wt-start').textContent = first.toFixed(1) + ' кг';
+      document.getElementById('wt-current').textContent = last.toFixed(1) + ' кг';
+      document.getElementById('wt-gained').textContent = (gained >= 0 ? '+' : '') + gained.toFixed(1) + ' кг';
+      document.getElementById('wt-gained').style.color = gained >= 0 ? 'var(--green)' : 'var(--rust)';
+      document.getElementById('wt-rate').textContent = rate !== null ? (rate >= 0 ? '+' : '') + rate.toFixed(2) + ' кг' : '—';
+      document.getElementById('wt-to-goal').textContent = toGoal > 0 ? toGoal.toFixed(1) + ' кг' : '✓ Цель!';
+      document.getElementById('wt-to-goal').style.color = toGoal <= 0 ? 'var(--green)' : 'var(--muted)';
+
+      // Status message
+      const st = getStatus(rate);
+      const stEl = document.getElementById('wt-status');
+      if (st && n >= 2) {
+        stEl.style.display = 'block';
+        stEl.style.borderColor = st.color;
+        stEl.style.background = st.color === 'var(--green)' ? 'rgba(111,191,96,.08)' : 'rgba(214,255,61,.06)';
+        stEl.textContent = st.msg;
+      } else {
+        stEl.style.display = 'none';
+      }
+    } else {
+      ['wt-start','wt-current','wt-gained','wt-rate','wt-to-goal'].forEach(id => {
+        document.getElementById(id).textContent = '—';
+      });
+      document.getElementById('wt-status').style.display = 'none';
+    }
+
+    // Chart
+    if (n >= 2) {
+      document.getElementById('wt-no-data').style.display = 'none';
+      const canvas = document.getElementById('wt-chart');
+      canvas.style.display = 'block';
+
+      const labels = sorted.map(r => fmtDate(r.date));
+      const data = sorted.map(r => r.kg);
+
+      // Trend line (linear regression)
+      const xs = sorted.map((_,i)=>i);
+      const xMean = xs.reduce((a,b)=>a+b,0)/n;
+      const yMean = data.reduce((a,b)=>a+b,0)/n;
+      const slope = xs.reduce((s,x,i)=>s+(x-xMean)*(data[i]-yMean),0) /
+                    xs.reduce((s,x)=>s+(x-xMean)**2,0);
+      const intercept = yMean - slope*xMean;
+      const trendData = xs.map(x => +(intercept + slope*x).toFixed(2));
+
+      // Target line
+      const targetData = sorted.map(() => GOAL);
+
+      if (chart) { chart.destroy(); }
+      chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Вес',
+              data,
+              borderColor: '#d6ff3d',
+              backgroundColor: 'rgba(214,255,61,0.08)',
+              borderWidth: 2.5,
+              pointBackgroundColor: '#d6ff3d',
+              pointRadius: 5,
+              pointHoverRadius: 7,
+              tension: 0.3,
+              fill: true,
+            },
+            {
+              label: 'Тренд',
+              data: trendData,
+              borderColor: '#ff5c2a',
+              borderWidth: 1.5,
+              borderDash: [5,4],
+              pointRadius: 0,
+              tension: 0,
+              fill: false,
+            },
+            {
+              label: 'Цель (74 кг)',
+              data: targetData,
+              borderColor: 'rgba(111,191,96,0.5)',
+              borderWidth: 1,
+              borderDash: [3,6],
+              pointRadius: 0,
+              fill: false,
+            },
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              labels: {
+                color: '#8a8576',
+                font: { family: "'JetBrains Mono', monospace", size: 10 },
+                boxWidth: 14,
+              }
+            },
+            tooltip: {
+              backgroundColor: '#14140f',
+              titleColor: '#d6ff3d',
+              bodyColor: '#f4f0e6',
+              borderColor: '#2a2820',
+              borderWidth: 1,
+              titleFont: { family: "'JetBrains Mono', monospace", size: 10 },
+              bodyFont: { family: "'JetBrains Mono', monospace", size: 11 },
+              callbacks: {
+                label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} кг`
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { color: '#8a8576', font: { family: "'JetBrains Mono', monospace", size: 9 } },
+              grid: { color: 'rgba(42,40,32,0.8)' },
+            },
+            y: {
+              ticks: {
+                color: '#8a8576',
+                font: { family: "'JetBrains Mono', monospace", size: 9 },
+                callback: v => v + ' кг'
+              },
+              grid: { color: 'rgba(42,40,32,0.8)' },
+              suggestedMin: Math.min(...data, GOAL) - 1,
+              suggestedMax: Math.max(...data, GOAL) + 1,
+            }
+          }
+        }
+      });
+    } else {
+      if (chart) { chart.destroy(); chart = null; }
+      document.getElementById('wt-no-data').style.display = 'block';
+      document.getElementById('wt-chart').style.display = 'none';
+    }
+
+    // Log table
+    const logWrap = document.getElementById('wt-log-wrap');
+    const logEl = document.getElementById('wt-log');
+    if (n === 0) {
+      logWrap.style.display = 'none';
+    } else {
+      logWrap.style.display = 'block';
+      let html = '';
+      [...sorted].reverse().forEach((r, idx) => {
+        const prevIdx = sorted.findIndex(x=>x.date===r.date) - 1;
+        const prev = prevIdx >= 0 ? sorted[prevIdx].kg : null;
+        const first = sorted[0].kg;
+        const delta = prev !== null ? (r.kg - prev) : null;
+        const deltaStart = r.kg - first;
+        const dColor = delta === null ? 'var(--muted)' : delta >= 0 ? 'var(--green)' : 'var(--rust)';
+        const dsColor = deltaStart >= 0 ? 'var(--green)' : 'var(--rust)';
+        html += `<div style="display:grid;grid-template-columns:1fr 80px 80px 80px 36px;gap:8px;padding:10px 16px;border-bottom:1px solid var(--line);font-size:13px;align-items:center">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink)">${fmtDate(r.date)} ${r.date.split('-')[0]}</span>
+  <span style="font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--acid)">${r.kg.toFixed(1)}</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${dColor}">${delta !== null ? ((delta>=0?'+':'')+delta.toFixed(1)) : '—'}</span>
+  <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${dsColor}">${(deltaStart>=0?'+':'')+deltaStart.toFixed(1)}</span>
+  <button onclick="deleteWeight('${r.date}')"
+    style="background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0;line-height:1">✕</button>
+</div>`;
+      });
+      logEl.innerHTML = html;
+    }
+  }
+
+  window.addWeight = function() {
+    const date = document.getElementById('wt-date').value;
+    const kg = parseFloat(document.getElementById('wt-kg').value);
+    if (!date || isNaN(kg) || kg < 40 || kg > 200) {
+      document.getElementById('wt-kg').style.borderColor = 'var(--rust)';
+      setTimeout(() => document.getElementById('wt-kg').style.borderColor = 'var(--line)', 1500);
+      return;
+    }
+    records = records.filter(r => r.date !== date);
+    records.push({ date, kg: +kg.toFixed(1) });
+    save();
+    document.getElementById('wt-kg').value = '';
+    document.getElementById('wt-date').value = today;
+    render();
+  };
+
+  window.deleteWeight = function(date) {
+    records = records.filter(r => r.date !== date);
+    save(); render();
+  };
+
+  window.resetWeight = function() {
+    if (!confirm('Удалить все записи веса?')) return;
+    records = [];
+    localStorage.removeItem('wt_records');
+    render();
+  };
+
+  render();
+})();
+</script>
+</section>
+<footer>
+<div class="big">+10 КГ <em>в перспективе</em></div>
+<div class="small">Темп +400 г/нед · 6 месяцев · Ростов-на-Дону · Балакирева · v4.0</div>
+</footer>
+</body>
+</html>
